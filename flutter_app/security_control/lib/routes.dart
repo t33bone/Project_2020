@@ -9,19 +9,16 @@ import 'package:security_control/pages/pictures_page/pictures.dart';
 import 'package:security_control/pages/sensors_page/sensors.dart';
 import 'package:security_control/pages/settings_page/settings.dart';
 
-
-Route getRoute(RouteSettings settings){
-
+Route getRoute(RouteSettings settings) {
   // Add your routes here
-  switch(settings.name){
+  switch (settings.name) {
     case '/':
       return MaterialPageRoute(builder: (context) => LoginPage());
     case '/HomePage':
       return MaterialPageRoute(builder: (context) => HomePage());
     // case '/DriftersPage':
     //   return MaterialPageRoute(builder: (context) => DriftersPage());
-    // case '/PicturesPage':
-    //   return MaterialPageRoute(builder: (context) => PicturesPage());
-
+    case '/PicturesPage':
+      return MaterialPageRoute(builder: (context) => PicturesPage());
   }
 }
