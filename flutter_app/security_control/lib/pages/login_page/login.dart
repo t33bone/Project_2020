@@ -15,33 +15,73 @@ class _LoginPageState extends State<LoginPage>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(
-        title: Text('x'),
-      ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+            Icon(
+              Icons.lock,
+              color: Theme.of(context).primaryColor,
+              size: 200
             ),
             Text(
-              'I do not know.',
+              'Verisure 2 tms.',
               style: Theme.of(context).textTheme.headline4,
             ),
+            Container(
+              margin: EdgeInsets.all(16), // Change to size instead of margin for larger screens
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.all(Radius.circular(14)),
+              ),
+              child:
+                  Column(
+                    children: <Widget> [
+                      TextField(
+                        decoration: InputDecoration(
+                        hintText: 'Username/E-mail',
+                        hintStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface
+                        ),
+                        border: UnderlineInputBorder(
+
+                        )
+                      ),
+                      ),
+                      TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            hintText: 'Password',
+                            hintStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface
+                            ),
+                            border: UnderlineInputBorder(
+
+                            )
+                        ),
+                      ),
+                      ButtonBar(
+                        alignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          ElevatedButton(onPressed: (){
+                            Navigator.pushReplacementNamed(context, '/HomePage');
+                          },
+                          child: Text('LOGIN'),
+                          ),
+                          FlatButton(onPressed: null,
+                              child: Text('REGISTER')),
+                        ],
+                      )
+                    ]
+                  )
+            ),
+
           ],
         ),
       ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushReplacementNamed(context, '/HomePage');
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

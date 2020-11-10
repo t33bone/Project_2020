@@ -19,11 +19,15 @@ const Color _errorColor = Color(0xFFE5E5E5); // May be subject to change
 const Color _onErrorColor = Color(0xFFC20000); // May be subject to change
 const Brightness _brightness = Brightness.light; // May be subject to change
 
-// Colors specific for dark mode:
+// Colors specific for dark mode (will have to modify and add more colors):
 const Color _onBackgroundColorDarkMode = Color(0xFFFFFFFF);
 const Color _onSurfaceColorDarkMode = Color(0xFFFFFFFF);
+const Color _hintColorDarkMode = Color(0xFFE5E5E5);
+const Brightness _brightnessDarkMode = Brightness.dark;
 
 // Create ThemeData from colorScheme (simplest, generates all needed colors):
+//    problem with ThemeData.from > Cannot modify 'final' properties afterwards...
+//    -> May have to change to assigning everything by hand.
 ThemeData getAppTheme(BuildContext context) => ThemeData.from(
 
   colorScheme: ColorScheme(primary: _primaryColor,
@@ -49,8 +53,7 @@ ThemeData getAppTheme(BuildContext context) => ThemeData.from(
 
 // For dark theme (is there a better way to do this other than a separate function?):
 ThemeData getAppThemeDark(BuildContext context) => ThemeData.from(
-
-    colorScheme: ColorScheme(
+  colorScheme: ColorScheme(
       primary: _primaryColor,
       primaryVariant: _primaryColorLight,
       secondary: _accentColor,
@@ -67,6 +70,12 @@ ThemeData getAppThemeDark(BuildContext context) => ThemeData.from(
 
   // Define white text as default for everything in dark mode:
   textTheme: TextTheme(
+    overline: TextStyle(
+      color: _onBackgroundColorDarkMode,
+    ),
+    button: TextStyle(
+      color: _onBackgroundColorDarkMode,
+    ),
     headline1: TextStyle(
       color: _onBackgroundColorDarkMode,
     ),
@@ -83,16 +92,16 @@ ThemeData getAppThemeDark(BuildContext context) => ThemeData.from(
       color: _onBackgroundColorDarkMode,
     ),
     headline6: TextStyle(
-      color:_onBackgroundColorDarkMode,
+      color: _onBackgroundColorDarkMode,
     ),
     subtitle1: TextStyle(
-      color:_onBackgroundColorDarkMode,
+      color: _onBackgroundColorDarkMode,
     ),
     subtitle2: TextStyle(
       color: _onBackgroundColorDarkMode,
     ),
     bodyText1: TextStyle(
-      color:_onBackgroundColorDarkMode,
+      color: _onBackgroundColorDarkMode,
     ),
     bodyText2: TextStyle(
       color: _onBackgroundColorDarkMode,
@@ -100,5 +109,5 @@ ThemeData getAppThemeDark(BuildContext context) => ThemeData.from(
     caption: TextStyle(
       color: _onBackgroundColorDarkMode,
     ),
-  )
+  ),
 );
