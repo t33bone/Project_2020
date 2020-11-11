@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: getAppTheme(context),
-      darkTheme: getAppThemeDark(context),
+      theme: getAppTheme(context, false),
+      darkTheme: getAppTheme(context, true),
       initialRoute: '/',
       onGenerateRoute: (RouteSettings settings) => getRoute(settings),
       //home: MyHomePage(title: 'Flutter Demo Home Page'),
