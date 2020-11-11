@@ -8,6 +8,7 @@ import 'package:security_control/pages/login_page/login.dart';
 import 'package:security_control/pages/pictures_page/pictures.dart';
 import 'package:security_control/pages/sensors_page/sensors.dart';
 import 'package:security_control/pages/settings_page/settings.dart';
+import 'package:security_control/pages/gallery_page/gallery.dart';
 
 Route getRoute(RouteSettings settings) {
   // Add your routes here
@@ -20,5 +21,7 @@ Route getRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => DriftersPage());
     case '/PicturesPage':
       return MaterialPageRoute(builder: (context) => PicturesPage());
+    case '/GalleryPage':
+      return MaterialPageRoute(builder: (context) => GalleryPage());
   }
 }

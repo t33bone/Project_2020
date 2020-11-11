@@ -48,21 +48,23 @@ class PicturesPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/GalleryPage');
+                      },
                       icon: Icon(Icons.airplanemode_active_rounded),
                       label: Text(
-                        'Drone',
+                        'Picture Gallery',
                         style: TextStyle(fontSize: 18.0),
                       ),
                     ),
-                    ElevatedButton.icon(
+/*                     ElevatedButton.icon(
                       onPressed: () {},
                       icon: Icon(Icons.directions_car_rounded),
                       label: Text(
                         'GoPiGo',
                         style: TextStyle(fontSize: 18.0),
                       ),
-                    ),
+                    ), */
                   ],
                 ),
               ],
