@@ -115,7 +115,7 @@ class GoPiGoSection extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  context,
+                  'GoPiGoN',
                   style: TextStyle(
                     //TODO: remove temp style
                     fontWeight: FontWeight.w500,
