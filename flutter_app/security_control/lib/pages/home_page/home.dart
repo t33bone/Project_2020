@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
           // PLACEHOLDER BUTTON
           TextButton(
             onPressed: () {
-              //Navigator.pushNamed(context, '/driftersPage')
+              Navigator.pushNamed(context, '/DriftersPage');
             },
             child: Text('Drifters'),
           ),
