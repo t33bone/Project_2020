@@ -36,7 +36,7 @@ class PicturesPage extends StatelessWidget {
           Card(
             clipBehavior: Clip.antiAlias,
             child: Column(
-              children: [
+              children: <Widget>[
                 ListTile(
                   title: Text(
                     'Gallery',
@@ -44,24 +44,23 @@ class PicturesPage extends StatelessWidget {
                   ),
                 ),
                 ButtonBar(
-                  alignment: MainAxisAlignment.spaceEvenly,
+                  alignment: MainAxisAlignment.spaceAround,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    FlatButton(
-                      onPressed: () {
-                        //open Drone gallery
-                      },
-                      child: Text(
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: Icon(Icons.airplanemode_active_rounded),
+                      label: Text(
                         'Drone',
-                        style: Theme.of(context).textTheme.headline5,
+                        style: TextStyle(fontSize: 18.0),
                       ),
                     ),
-                    FlatButton(
-                      onPressed: () {
-                        //open GoPiGo gallery
-                      },
-                      child: Text(
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: Icon(Icons.directions_car_rounded),
+                      label: Text(
                         'GoPiGo',
-                        style: Theme.of(context).textTheme.headline5,
+                        style: TextStyle(fontSize: 18.0),
                       ),
                     ),
                   ],
