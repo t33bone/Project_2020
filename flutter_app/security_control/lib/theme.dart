@@ -90,8 +90,7 @@ ThemeData getAppTheme(BuildContext context, bool isDark) {
         ),
         caption: TextStyle(
           color: _onBackgroundColor,
-        )
-    );
+        ));
 
     hintCol = _onBackgroundColor;
   }
@@ -169,9 +168,7 @@ ThemeData getAppTheme(BuildContext context, bool isDark) {
           color: hintCol,
         ),
         border: UnderlineInputBorder(),
-      )
-
-  );
+      ));
 
   return themeD;
 }
