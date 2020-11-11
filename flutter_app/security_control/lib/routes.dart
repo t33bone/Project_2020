@@ -16,8 +16,8 @@ Route getRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => LoginPage());
     case '/HomePage':
       return MaterialPageRoute(builder: (context) => HomePage());
-    // case '/DriftersPage':
-    //   return MaterialPageRoute(builder: (context) => DriftersPage());
+    case '/DriftersPage':
+      return MaterialPageRoute(builder: (context) => DriftersPage());
     case '/PicturesPage':
       return MaterialPageRoute(builder: (context) => PicturesPage());
   }
