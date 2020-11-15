@@ -29,7 +29,7 @@ class _GalleryPageState extends State<GalleryPage> {
             clipBehavior: Clip.antiAlias,
             child: DropdownButton<Item>(
               isExpanded: true,
-              hint: Text('Select device'),
+              hint: Text('Select a device'),
               iconSize: 40,
               value: selectedGallery,
               onChanged: (Item value) {
@@ -56,28 +56,65 @@ class _GalleryPageState extends State<GalleryPage> {
               }).toList(),
             ),
           ),
-          Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text(
-                    '${selectedGallery != null ? selectedGallery.name : "Select Device"}',
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 8.0, left: 8.0),
-                  child: Image.asset('lib/images/test_img.png'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'deviceName, dateAndTime',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                ),
-              ],
+          selectedGallery != null
+              ? selectedGallery.name == 'Drone'
+                  ? CreatePictureCard(
+                      selectedGallery: selectedGallery, image: 'drone_test_img')
+                  : CreatePictureCard(
+                      selectedGallery: selectedGallery,
+                      image: 'gopigo_test_img')
+              : DeviceNotSelected(),
+        ],
+      ),
+    );
+  }
+}
+
+class DeviceNotSelected extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(
+              'Device not selected',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CreatePictureCard extends StatelessWidget {
+  final Item selectedGallery;
+  final String image;
+
+  CreatePictureCard({this.selectedGallery, this.image});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            title: Text(
+              '${selectedGallery != null ? selectedGallery.name : "Device not selected"}',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ),
+          Padding(
+              padding: EdgeInsets.only(right: 8.0, left: 8.0),
+              child: Image.asset('lib/images/$image.png')),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              '${selectedGallery != null ? selectedGallery.name : "Device not selected"} , dateAndTime',
+              style: Theme.of(context).textTheme.bodyText2,
             ),
           ),
         ],
