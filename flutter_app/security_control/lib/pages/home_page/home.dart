@@ -31,6 +31,14 @@ class _HomePageState extends State<HomePage> {
               Navigator.pushNamed(context, '/PicturesPage');
             },
             child: Text('Pictures'),
+          ),
+
+          // PLACEHOLDER BUTTON
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/SettingsPage');
+            },
+            child: Text('Settings'),
           )
         ]));
   }

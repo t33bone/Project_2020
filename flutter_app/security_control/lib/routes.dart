@@ -23,5 +23,7 @@ Route getRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => PicturesPage());
     case '/GalleryPage':
       return MaterialPageRoute(builder: (context) => GalleryPage());
+    case '/SettingsPage':
+      return MaterialPageRoute(builder: (context) => SettingsPage());
   }
 }
