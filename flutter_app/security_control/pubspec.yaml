@@ -24,6 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # google maps package
+  # https://medium.com/flutter/google-maps-and-flutter-cfb330f9a245#:~:text=%20Adding%20Google%20Maps%20to%20Flutter%20%201,last%20step%2C%20you%20may%20have%20seen...%20More%20
+  google_maps_flutter: ^0.4.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
