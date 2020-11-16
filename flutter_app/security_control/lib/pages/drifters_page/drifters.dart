@@ -1,6 +1,7 @@
-import 'dart:async'; //maps
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart'; //maps
+import 'package:flutter_map/flutter_map.dart'; //maps
+import 'package:latlong/latlong.dart';
 
 //TODO: conform to servers model of GoPiGo
 class GoPiGo {
@@ -16,39 +17,9 @@ class DriftersPage extends StatefulWidget {
 
 class _DriftersPageState extends State<DriftersPage> {
   //TODO: get rid of static test names
-  //final _name = <String>['test1', 'pekka', 'turpeinen'];
   final gopigolist = <GoPiGo>[];
 
-  //maps stuff
-  //TODO: replace test markers
-  final Set<Marker> _checkpoints = {
-    Marker(
-        markerId: MarkerId("gopigo_chkp_1"),
-        position: LatLng(65.060803, 25.469838),
-        infoWindow: InfoWindow(title: 'checkpoint 1')),
-    Marker(
-        markerId: MarkerId("gopigo_chkp_2"),
-        position: LatLng(65.061405, 25.464516),
-        infoWindow: InfoWindow(title: 'checkpoint 2')),
-    Marker(
-        markerId: MarkerId("gopigo_chkp_3"),
-        position: LatLng(65.059292, 25.467799),
-        infoWindow: InfoWindow(title: 'checkpoint 3')),
-    Marker(
-        markerId: MarkerId("gopigo_chkp_4"),
-        position: LatLng(65.058998, 25.463282),
-        infoWindow: InfoWindow(title: 'checkpoint 4')),
-    /*Marker(
-        markerId: MarkerId("gopigo_car_1"),
-        position: LatLng(65.059559, 25.469848),
-        icon: BitmapDescriptor.fromAsset(
-            'lib/images/baseline_local_taxi_black_18dp.png')),*/
-  };
-  Completer<GoogleMapController> _controller = Completer();
-  static const LatLng _center = const LatLng(65.059029, 25.466243);
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
+  // static const LatLng _center = const LatLng(65.059029, 25.466243);
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +47,73 @@ class _DriftersPageState extends State<DriftersPage> {
         width: 350.0,
         child: Stack(
           children: [
-            GoogleMap(
-              markers: _checkpoints,
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _center,
+            new FlutterMap(
+              options: new MapOptions(
+                center: new LatLng(65.059029, 25.466243),
                 zoom: 15.0,
               ),
+              layers: [
+                new TileLayerOptions(
+                    urlTemplate:
+                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    subdomains: ['a', 'b', 'c']),
+                new MarkerLayerOptions(
+                  markers: [
+                    new Marker(
+                      width: 26.0,
+                      height: 26.0,
+                      point: LatLng(65.060803, 25.469838),
+                      builder: (ctx) => new Container(
+                        child: new FlutterLogo(),
+                      ),
+                    ),
+                    new Marker(
+                      width: 26.0,
+                      height: 26.0,
+                      point: LatLng(65.061405, 25.464516),
+                      builder: (ctx) => new Container(
+                        child: new FlutterLogo(),
+                      ),
+                    ),
+                    new Marker(
+                      width: 26.0,
+                      height: 26.0,
+                      point: LatLng(65.059292, 25.467799),
+                      builder: (ctx) => new Container(
+                        child: new FlutterLogo(),
+                      ),
+                    ),
+                    new Marker(
+                      width: 26.0,
+                      height: 26.0,
+                      point: LatLng(65.058998, 25.463282),
+                      builder: (ctx) => new Container(
+                        child: new FlutterLogo(),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+              children: <Widget>[
+                TileLayerWidget(
+                    options: TileLayerOptions(
+                        urlTemplate:
+                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        subdomains: ['a', 'b', 'c'])),
+                MarkerLayerWidget(
+                    options: MarkerLayerOptions(
+                  markers: [
+                    Marker(
+                      width: 26.0,
+                      height: 26.0,
+                      point: LatLng(65.058998, 25.461282),
+                      builder: (ctx) => Container(
+                        child: FlutterLogo(),
+                      ),
+                    ),
+                  ],
+                )),
+              ],
             ),
             Align(
               alignment: Alignment.topCenter,
@@ -102,31 +133,6 @@ class _DriftersPageState extends State<DriftersPage> {
                 ],
               ),
             ),
-            /*Row(
-            children: [
-              /* GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                    target: _center,
-                    zoom: 11.0,
-                  ),
-                  ),*/
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      child: Center(
-                        child: Text('Map Section goes Here',
-                            style: Theme.of(context).textTheme.headline6),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),*/
           ],
         ),
       ),
@@ -226,35 +232,6 @@ class _DriftersPageState extends State<DriftersPage> {
     );
   }
 
-  //TODO remove, old, unused
-  Widget _goPiGotest(GoPiGo device) {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  device.name,
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Icon(
-          Icons.battery_std,
-          //textDirection: ,
-        ),
-        Text(
-          device.batterylevel.toString(),
-        ),
-      ],
-    );
-  }
-
   Widget _gohomeSection() {
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -283,64 +260,6 @@ class _DriftersPageState extends State<DriftersPage> {
           )
         ],
       ),
-    );
-  }
-}
-
-//TODO: old, unused, remove?
-class GoPiGoSection extends StatefulWidget {
-  final String name;
-  const GoPiGoSection({
-    Key key,
-    this.name,
-  }) : super(key: key);
-
-  @override
-  _GoPiGoSectionState createState() => _GoPiGoSectionState();
-}
-
-//TODO: old, unused, remove?
-class _GoPiGoSectionState extends State<GoPiGoSection> {
-  @override
-  Widget build(BuildContext context) {
-    // final name = 'asd';
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  'testee',
-                  style: TextStyle(
-                    //TODO: remove temp style
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  'name',
-                  style: TextStyle(
-                    //TODO: remove temp style
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Icon(
-          Icons.battery_std,
-          //textDirection: ,
-        ),
-        Text(
-          '98%',
-        ),
-      ],
     );
   }
 }
