@@ -10,6 +10,12 @@ import 'package:security_control/pages/sensors_page/sensors.dart';
 import 'package:security_control/pages/settings_page/settings.dart';
 import 'package:security_control/pages/gallery_page/gallery.dart';
 
+
+/*
+  ######## DEPRECATED DONT USE THIS ###############
+*/
+
+
 Route getRoute(RouteSettings settings) {
   // Add your routes here
   switch (settings.name) {
