@@ -165,6 +165,33 @@ class _DriftersPageState extends State<DriftersPage> {
     );
   }
 
+  void _pushGoPiGoSettings() {
+    Navigator.of(context).push(
+      MaterialPageRoute<GoPiGo>(
+        builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('test settings'),
+            ),
+            body: Card(
+              clipBehavior: Clip.antiAlias,
+              child: ListView(
+                children: [
+                  Text("setting 2"),
+                  Divider(),
+                  Text("setting 3"),
+                  Divider(),
+                  Text("data"),
+                  //context.dependOnInheritedWidgetOfExactType<ListTile>(),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   //better version of gopigotest
   //TODO rename this
   Widget _goPiGotestListTile(GoPiGo device) {
@@ -195,7 +222,7 @@ class _DriftersPageState extends State<DriftersPage> {
           ],
         ),
       ),
-      onTap: () {},
+      onTap: _pushGoPiGoSettings,
     );
   }
 
