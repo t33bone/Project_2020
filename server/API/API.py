@@ -39,9 +39,16 @@ def getDeviceID():
 def postDeviceID():
     print (request.is_json)
     content = request.get_json()
-    print (content['testinumeroINT'])
-    print (content['testichar'])
-    query = '''INSERT INTO Testi (testinumeroInt, testichar) values ('{}','{}')'''.format(content['testinumeroINT'], content['testichar'])
+    print(content)
+    query = '''INSERT INTO Testi (testinumeroInt, 
+                testichar,
+                testiTeksti,
+                testiTeksti2) 
+                values ('{}','{}','{}','{}')'''.format(
+                    content['testinumeroINT'], 
+                    content['testichar'],
+                    content['testiTeksti'],
+                    content['testiTeksti2'])
     db.sqlInsert(query)
     return "Post successful"
 

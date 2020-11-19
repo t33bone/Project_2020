@@ -6,20 +6,38 @@ postUrl = 'http://127.0.0.1:5000/api/testi/post/newDevice'
 
 
 def getExample():
+    #Example gets json data from url specified above
     getData = requests.get(getUrl)
+    
+    #converts the data to json
     response = getData.json()
     print(response)
 
 def postExample():
 
-    input1 = raw_input("Give integer: ")
-    input2 = raw_input("give char(45): ")
+    #anything regarding inputs can be changed but try to match the amount of data sent in the json Example
+    uInput = {}
 
+    for i in range(4):
+        if i == 0:
+            uInput[i] = raw_input("Give a integer: ")
+        if i == 1:
+            uInput[i] = raw_input("Give a char: ")
+        if i == 2:
+            uInput[i] = raw_input("Give a string: ")
+        if i == 3:
+            uInput[i] = raw_input("Give a string: ")
+
+            
+ # Example for a json object. For compatibility with server don't change the strings between " "
     jsonExample = {
-                    "testinumeroINT": input1,
-                    "testichar": input2
+                    "testinumeroINT": uInput[0],
+                    "testichar": uInput[1],
+                    "testiTeksti": uInput[2],
+                    "testiTeksti2": uInput[3],
                   }
 
+    #Sends a post request to url specified in the beginning, that is the server url, don't change
     x = requests.post(postUrl, json = jsonExample)
 
     return "post success"
