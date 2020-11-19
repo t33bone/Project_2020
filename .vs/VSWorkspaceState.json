@@ -5,8 +5,9 @@
     "\\drone",
     "\\flutter_app",
     "\\gopigo",
-    "\\server"
+    "\\server",
+    "\\server\\API"
   ],
-  "SelectedNode": "\\server\\RequestsAPI.py",
+  "SelectedNode": "\\server\\API\\API.sln",
   "PreviewInSolutionExplorer": false
 }

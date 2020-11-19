@@ -1,11 +1,10 @@
 import flask
-from flask import request, jsonify
+from flask import request, jsonify, Flask
 import sqlite3
 from flask_restful import Resource, Api, abort
 import databaseConnect as db
-import re, json
 from datetime import date, datetime
-
+import re, json
 
 app = flask.Flask(__name__)
 #app.config["DEBUG"] = True
@@ -36,53 +35,20 @@ def getDeviceID():
     data = db.sqlQuery(query)
     return jsonify(data)
 
-@app.route('/api/testi/post/newDevice', methods=['GET'])
+@app.route('/api/testi/post/newDevice', methods=['POST'])
 def postDeviceID():
-    testnumberInt = int(raw_input("testinumeroINT"))
-    testchar = str(raw_input("testchar"))
-    testchar = testchar.rstrip()
-    query = '''INSERT INTO Testi (testinumeroInt, testichar) values ('{}','{}')'''.format(testnumberInt, testchar)
-    db.sqlInsert(query) 
-    return query
+    print (request.is_json)
+    content = request.get_json()
+    print (content['testinumeroINT'])
+    print (content['testichar'])
+    query = '''INSERT INTO Testi (testinumeroInt, testichar) values ('{}','{}')'''.format(content['testinumeroINT'], content['testichar'])
+    db.sqlInsert(query)
+    return "Post successful"
 
 #endregion
 
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
-
-
-@app.route('/api/v1/resources/books', methods=['GET'])
-def api_filter():
-    query_parameters = request.args
-
-    id = query_parameters.get('id')
-    published = query_parameters.get('published')
-    author = query_parameters.get('author')
-
-    query = "SELECT * FROM books WHERE"
-    to_filter = []
-
-    if id:
-        query += ' id=? AND'
-        to_filter.append(id)
-    if published:
-        query += ' published=? AND'
-        to_filter.append(published)
-    if author:
-        query += ' author=? AND'
-        to_filter.append(author)
-    if not (id or published or author):
-        return page_not_found(404)
-
-    query = query[:-4] + ';'
-
-    conn = sqlite3.connect('books.db')
-    conn.row_factory = dict_factory
-    cur = conn.cursor()
-
-    results = cur.execute(query, to_filter).fetchall()
-
-    return jsonify(results)
 
 app.run()
