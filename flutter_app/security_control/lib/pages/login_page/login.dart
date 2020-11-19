@@ -26,7 +26,7 @@ class LoginPage extends StatelessWidget{
             children: <Widget>[
               Icon(Icons.lock, color: Theme.of(context).primaryColor, size: 200),
               Text(
-                'Verisure 2 tms.',
+                model.title,
                 style: Theme.of(context).textTheme.headline4,
               ),
               Card(
@@ -37,18 +37,35 @@ class LoginPage extends StatelessWidget{
                     padding: EdgeInsets.all(16),
                     child: Column(children: <Widget>[
                       TextField(
-                        controller: model.getUserNameController(),
+                        controller: model.userNameController,
                         decoration: InputDecoration(
-                          hintText: 'Username/E-mail',
+                          hintText: model.loginFieldHint,
                         ),
                       ),
                       TextField(
-                        controller: model.getPasswordController(),
+                        controller: model.passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
-                          hintText: 'Password',
+                          hintText: model.passwordFieldHint,
                         ),
                       ),
+                      Visibility(
+                        visible: model.errorVisible,
+                        child:
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(top: 8, left: 8),
+                                  child:Text(
+                                    model.loginDataErrorLabel,
+                                    textAlign: TextAlign.left,
+                                    textWidthBasis: TextWidthBasis.parent,
+                                    style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onError)
+                                    )
+                                )]
+                            )),
                       ButtonBar(
                         alignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
@@ -57,9 +74,9 @@ class LoginPage extends StatelessWidget{
                             onPressed: () {
                               model.login();
                             },
-                            child: Text('LOGIN'),
+                            child: Text(model.loginLabel),
                           ),
-                          FlatButton(onPressed: null, child: Text('REGISTER')),
+                          FlatButton(onPressed: null, child: Text(model.registerLabel)),
                         ],
                       )
                     ])),

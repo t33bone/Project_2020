@@ -168,7 +168,8 @@ ThemeData getAppTheme(BuildContext context, bool isDark) {
           color: hintCol,
         ),
         border: UnderlineInputBorder(),
-      ));
+      ),
+  );
 
   return themeD;
 }

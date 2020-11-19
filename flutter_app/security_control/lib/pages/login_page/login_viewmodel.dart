@@ -8,21 +8,37 @@ import 'package:flutter/foundation.dart';
 
 class LoginViewModel extends ChangeNotifier{
 
-  //TODO: Move texts from buttons here too
-
   NavigationService _navigationService = locator<NavigationService>();
 
   bool _loginSuccess = false;
+  bool _errorVisible = false;
   TextEditingController _userNameController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
 
-  // No idea if this is the right way to do this
-  TextEditingController getUserNameController(){
+  String _title = "Security Control";
+  String _loginFieldHint = "Username/E-mail";
+  String _passwordFieldHint = "Password";
+  String _loginLabel = "LOGIN";
+  String _registerLabel = "REGISTER";
+  String _loginDataErrorLabel = "Wrong username or password";
+
+  // This is the correct way of getting a reference to a private member variable
+  TextEditingController get userNameController{
     return _userNameController;
   }
-  // Likely not.
-  TextEditingController getPasswordController(){
-    return _passwordController;
+  // Alternative notation is:
+  TextEditingController get passwordController => _passwordController;
+  String get title => _title;
+  String get loginLabel => _loginLabel;
+  String get registerLabel => _registerLabel;
+  String get loginDataErrorLabel => _loginDataErrorLabel;
+  String get loginFieldHint => _loginFieldHint;
+  String get passwordFieldHint => _passwordFieldHint;
+  bool get errorVisible => _errorVisible;
+
+  void _setErrorVisibility(bool visible){
+    _errorVisible = true;
+    notifyListeners();
   }
 
   void login(){
@@ -30,10 +46,14 @@ class LoginViewModel extends ChangeNotifier{
     String password = _passwordController.text;
 
     //TODO: implement actual login logic
-    //if(username != ""){
+    if(username == ""){
       _loginSuccess = true;
       _navigationService.navigateToAndReplace(Routes.homePage);
-    //}
+    }
+    else{
+      _loginSuccess = false;
+      _setErrorVisibility(true);
+    }
 
   }
 
