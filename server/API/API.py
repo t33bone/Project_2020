@@ -35,6 +35,15 @@ def getDeviceID():
     data = db.sqlQuery(query)
     return jsonify(data)
 
+@app.route('/api/testi/get/<variable>', methods=['GET'])
+def getDevice(variable):
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT {} FROM Testi".format(variable)
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
 @app.route('/api/testi/post/newDevice', methods=['POST'])
 def postDeviceID():
     print (request.is_json)
@@ -50,9 +59,28 @@ def postDeviceID():
                     content['testiTeksti'],
                     content['testiTeksti2'])
     db.sqlInsert(query)
+
     return "Post successful"
 
 #endregion
+
+@app.route('/api/devices/get/all', methods=['GET'])
+def getDeviceAll():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM Testi"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+@app.route('/api/devices/get/<devicename>', methods=['GET'])
+def getDeviceName(devicename):
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM Testi where DeviceName = {}".format(devicename)
+    data = db.sqlQuery(query)
+    return jsonify(data)
 
 @app.errorhandler(404)
 def page_not_found(e):

@@ -3,14 +3,26 @@ from flask import json
 
 # Don't change these urls, they are example http method urls and they can be changed on the server side
 # also more can be made for more specific use cases
-getUrl = 'http://195.148.21.106/api/testi/get/all'
-postUrl = 'http://195.148.21.106/api/testi/post/newDevice'
+LINUX = False
+
+if LINUX == True:
+    getUrl = 'http://195.148.21.106/api/testi/get/all'
+    postUrl = 'http://195.148.21.106/api/testi/post/newDevice'
+else:
+    getUrl = 'http://127.0.0.1:5000/api/testi/get/all'
+    postUrl = 'http://127.0.0.1:5000/api/testi/post/newDevice'
 
 def getExample():
     #Example gets json data from url specified above
     getData = requests.get(getUrl)
     
     #converts the data to json
+    response = getData.json()
+    print(response)
+
+def getSpecificColumn():
+    columnName = raw_input("Give Column name\n(testinumeroINT, testichar, testiTeksti, testiTeksti2)")
+    getData = requests.get('http://127.0.0.1:5000/api/testi/get/' + columnName)
     response = getData.json()
     print(response)
 
@@ -37,7 +49,7 @@ def postExample():
                     "testiTeksti": uInput[2],
                     "testiTeksti2": uInput[3],
                   }
-
+    
     #Sends a post request to url specified in the beginning, that is the server url, don't change
     x = requests.post(postUrl, json = jsonExample)
 
@@ -45,9 +57,13 @@ def postExample():
 
     # just a ui type of way to use the methods
 while(True):
-    x = raw_input("1: Get method \n2: Post method ")
+    x = raw_input("1: Get all method \n2: Get specific table\n3: Post method ")
 
     if int(x) == 2:
+        getSpecificColumn()
+    if int(x) == 3:
         postExample()
-    else:
+    if int(x) == 1:
         getExample()
+    else:
+        continue
