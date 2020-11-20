@@ -7,7 +7,7 @@ LINUX = False
 
 if LINUX == True:
     getUrl = 'http://195.148.21.106/api/testi/get/all'
-    getSpecificUrl = 'http://127.0.0.1:5000/api/testi/get/'
+    getSpecificUrl = 'http://195.148.21.106/api/testi/get/'
     postUrl = 'http://195.148.21.106/api/testi/post/newDevice'
 else:
     getUrl = 'http://127.0.0.1:5000/api/testi/get/all'
