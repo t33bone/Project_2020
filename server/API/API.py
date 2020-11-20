@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, "/var/www/RestApi/API/venv/lib/python2.7/site-packages")
 import flask
 from flask import request, jsonify, Flask
 import sqlite3
@@ -86,4 +88,5 @@ def getDeviceName(devicename):
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
-app.run()
+if __name__ == "__main__":
+	app.run()

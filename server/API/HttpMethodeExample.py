@@ -3,9 +3,9 @@ from flask import json
 
 # Don't change these urls, they are example http method urls and they can be changed on the server side
 # also more can be made for more specific use cases
-LINUX = False
+LINUX = True
 
-if LINUX == True:
+if LINUX == False:
     getUrl = 'http://195.148.21.106/api/testi/get/all'
     getSpecificUrl = 'http://195.148.21.106/api/testi/get/'
     postUrl = 'http://195.148.21.106/api/testi/post/newDevice'
@@ -27,6 +27,7 @@ def getSpecificColumn():
     columnName = raw_input("Give Column name\n(testinumeroINT, testichar, testiTeksti, testiTeksti2)")
 
     # url + variable name combines them to one string which is then handled on the API side
+    print(getSpecificUrl + columnName)
     getData = requests.get(getSpecificUrl + columnName)
     response = getData.json()
     print(response)
