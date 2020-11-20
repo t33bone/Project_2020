@@ -7,15 +7,17 @@ from os.path import expanduser
 
 home = expanduser('~')
 
-LINUX = False
+LINUX = True
 if LINUX == True:
-    with open("var/www/RestApi/API/login_info.txt", "r") as f:
+    with open("/var/www/RestApi/API/login_info.txt", "r") as f:
         login_info = [line.strip() for line in f]
-    mypkey = paramiko.RSAKey.from_private_key_file("var/www/RestApi/API/openssh_key", login_info[9])
+    mypkey = paramiko.RSAKey.from_private_key_file("/var/www/RestApi/API/openssh_key", login_info[9])
 else:
     with open("C:\\Users\\teemu\\OneDrive\\Asiakirjat\\Koulujuttuja\\PRojekti avaintiedosto\\login_info.txt", "r") as f:
+    #with open("D:\\OneDrive - Oulun ammattikorkeakoulu\\S2020_Projekti\\login_info.txt", "r") as f:    
         login_info = [line.strip() for line in f]
     mypkey = paramiko.RSAKey.from_private_key_file("C:\\Users\\teemu\\OneDrive\\Asiakirjat\\Koulujuttuja\\PRojekti avaintiedosto\\openssh_key", login_info[9])
+    #mypkey = paramiko.RSAKey.from_private_key_file("D:\\OneDrive - Oulun ammattikorkeakoulu\\S2020_Projekti\\openssh_key", login_info[9])
     
     
 
