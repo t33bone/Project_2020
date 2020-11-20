@@ -20,8 +20,11 @@ def getExample():
     response = getData.json()
     print(response)
 
+    #example how to get more specific info with get method
 def getSpecificColumn():
     columnName = raw_input("Give Column name\n(testinumeroINT, testichar, testiTeksti, testiTeksti2)")
+
+    # url + variable name combines them to one string which is then handled on the API side
     getData = requests.get('http://127.0.0.1:5000/api/testi/get/' + columnName)
     response = getData.json()
     print(response)
