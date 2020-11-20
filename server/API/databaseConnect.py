@@ -5,9 +5,19 @@ from paramiko import SSHClient
 from sshtunnel import SSHTunnelForwarder
 from os.path import expanduser
 
+home = expanduser('~')
 
-with open("C:\\Users\\teemu\\OneDrive\\Asiakirjat\\Koulujuttuja\\PRojekti avaintiedosto\\login_info.txt", "r") as f:
-    login_info = [line.strip() for line in f]
+LINUX = False
+if LINUX == True:
+    with open("var/www/RestApi/API/login_info.txt", "r") as f:
+        login_info = [line.strip() for line in f]
+    mypkey = paramiko.RSAKey.from_private_key_file("var/www/RestApi/API/openssh_key", login_info[9])
+else:
+    with open("C:\\Users\\teemu\\OneDrive\\Asiakirjat\\Koulujuttuja\\PRojekti avaintiedosto\\login_info.txt", "r") as f:
+        login_info = [line.strip() for line in f]
+    mypkey = paramiko.RSAKey.from_private_key_file("C:\\Users\\teemu\\OneDrive\\Asiakirjat\\Koulujuttuja\\PRojekti avaintiedosto\\openssh_key", login_info[9])
+    
+    
 
 sql_hostname = login_info[0]
 sql_username = login_info[1]
@@ -19,8 +29,6 @@ ssh_user = login_info[6]
 ssh_port = int(login_info[7])
 sql_ip = login_info[8]
 
-home = expanduser('~')
-mypkey = paramiko.RSAKey.from_private_key_file("C:\\Users\\teemu\\OneDrive\\Asiakirjat\\Koulujuttuja\\PRojekti avaintiedosto\\openssh_key", login_info[9])
 
 
 def sqlQuery(query):
