@@ -7,9 +7,11 @@ LINUX = False
 
 if LINUX == True:
     getUrl = 'http://195.148.21.106/api/testi/get/all'
+    getSpecificUrl = 'http://127.0.0.1:5000/api/testi/get/'
     postUrl = 'http://195.148.21.106/api/testi/post/newDevice'
 else:
     getUrl = 'http://127.0.0.1:5000/api/testi/get/all'
+    getSpecificUrl = 'http://127.0.0.1:5000/api/testi/get/'
     postUrl = 'http://127.0.0.1:5000/api/testi/post/newDevice'
 
 def getExample():
@@ -25,7 +27,7 @@ def getSpecificColumn():
     columnName = raw_input("Give Column name\n(testinumeroINT, testichar, testiTeksti, testiTeksti2)")
 
     # url + variable name combines them to one string which is then handled on the API side
-    getData = requests.get('http://127.0.0.1:5000/api/testi/get/' + columnName)
+    getData = requests.get(getSpecificUrl + columnName)
     response = getData.json()
     print(response)
 
