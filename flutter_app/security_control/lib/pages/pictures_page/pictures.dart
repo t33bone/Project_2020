@@ -53,7 +53,7 @@ class PicturesPage extends StatelessWidget {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          model.goToGalleryPage(context);
+                          model.galleryButtonOnPressed();
                         },
                         icon: Icon(Icons.airplanemode_active_rounded),
                         label: Text(

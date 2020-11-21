@@ -1,22 +1,46 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
-class GalleryViewModel extends ChangeNotifier {}
+class GalleryViewModel extends ChangeNotifier {
+  String _appBarTitle = "Gallery";
+  String _dropDownButtonHint = '  Select a device';
+  static Item _selectedGallery;
+  double _dropDownIconSize = 30.0;
 
-List<Photo> parsePhotos(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  String get appBarTitle => _appBarTitle;
+  String get dropDownButtonHint => _dropDownButtonHint;
+  double get dropDownIconSize => _dropDownIconSize;
 
-  return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
+  List<Item> galleries = <Item>[
+    const Item('Drone', Icon(Icons.airplanemode_active_rounded)),
+    const Item('GoPiGo', Icon(Icons.directions_car_rounded)),
+  ];
+
+  void setDropDownValue(Item selected) {
+    _selectedGallery = selected;
+    notifyListeners();
+  }
+
+  Item get selectedGallery => _selectedGallery;
+/*   static String getUrl(_selectedGallery) {
+    String getPicturesUrl = "";
+    _selectedGallery != null
+        ? _selectedGallery.name == 'Drone'
+            ? getPicturesUrl = 'https://jsonplaceholder.typicode.com/photos'
+            : getPicturesUrl = null
+        : null;
+    return getPicturesUrl;
+  } */
 }
 
-Future<List<Photo>> fetchPhotos(http.Client client) async {
-  final response =
-      await client.get('https://jsonplaceholder.typicode.com/photos');
-  return compute(parsePhotos, response.body);
+class Item {
+  const Item(this.name, this.icon);
+  final String name;
+  final Icon icon;
 }
 
 class Photo {
@@ -39,20 +63,17 @@ class Photo {
   }
 }
 
-class PhotosList extends StatelessWidget {
-  final List<Photo> photos;
-  PhotosList({Key key, this.photos}) : super(key: key);
+Future<List<Photo>> fetchPhotos(http.Client client) async {
+  final response =
+      await client.get('https://jsonplaceholder.typicode.com/photos');
+  /* await client
+          .get(GalleryViewModel.getUrl(GalleryViewModel._selectedGallery)); */
+  return parsePhotos(response.body);
+  //return compute(parsePhotos, response.body);
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
-      itemCount: photos.length,
-      itemBuilder: (context, index) {
-        return Image.network(photos[index].thumbnailUrl);
-      },
-    );
-  }
+List<Photo> parsePhotos(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+
+  return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
 }
