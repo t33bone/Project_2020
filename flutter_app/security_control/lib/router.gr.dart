@@ -16,6 +16,8 @@ import 'pages/home_page/home.dart';
 import 'pages/login_page/login.dart';
 import 'pages/pictures_page/pictures.dart';
 import 'pages/sensors_page/sensors.dart';
+import 'pages/settings_page/notification_settings.dart';
+import 'pages/settings_page/server_settings.dart';
 import 'pages/settings_page/settings.dart';
 
 class Routes {
@@ -27,6 +29,8 @@ class Routes {
   static const String picturesPage = '/pictures-page';
   static const String sensorsPage = '/sensors-page';
   static const String settingsPage = '/settings-page';
+  static const String serverSettingsPage = '/server-settings-page';
+  static const String notificationSettingsPage = '/notification-settings-page';
   static const all = <String>{
     loginPage,
     driftersPage,
@@ -36,6 +40,8 @@ class Routes {
     picturesPage,
     sensorsPage,
     settingsPage,
+    serverSettingsPage,
+    notificationSettingsPage,
   };
 }
 
@@ -51,6 +57,8 @@ class Router extends RouterBase {
     RouteDef(Routes.picturesPage, page: PicturesPage),
     RouteDef(Routes.sensorsPage, page: SensorsPage),
     RouteDef(Routes.settingsPage, page: SettingsPage),
+    RouteDef(Routes.serverSettingsPage, page: ServerSettingsPage),
+    RouteDef(Routes.notificationSettingsPage, page: NotificationSettingsPage),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -100,6 +108,18 @@ class Router extends RouterBase {
     SettingsPage: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => SettingsPage(),
+        settings: data,
+      );
+    },
+    ServerSettingsPage: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => ServerSettingsPage(),
+        settings: data,
+      );
+    },
+    NotificationSettingsPage: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => NotificationSettingsPage(),
         settings: data,
       );
     },
