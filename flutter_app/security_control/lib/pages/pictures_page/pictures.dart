@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'pictures_viewmodel.dart';
+import 'widgets/pictures_widgets.dart';
+import 'package:security_control/models/photo.dart';
 
 //Pictures page
 
@@ -9,8 +11,9 @@ class PicturesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<PicturesViewModel>.reactive(
       viewModelBuilder: () => PicturesViewModel(),
+      //onModelReady: (model) => model.loadData(),
       builder: (context, model, child) => Scaffold(
-        appBar: AppBar(title: Text('Pictures')),
+        appBar: AppBar(title: Text(model.appBarTitle)),
         body: ListView(
           children: [
             Card(
@@ -19,21 +22,34 @@ class PicturesPage extends StatelessWidget {
                 children: [
                   ListTile(
                     title: Text(
-                      'Latest Picture',
+                      model.pictureTitle,
                       style: Theme.of(context).textTheme.headline4,
                     ),
                   ),
-                  Padding(
+/*                   Padding(
                     padding: EdgeInsets.only(right: 8.0, left: 8.0),
-                    child: Image.asset(model.testImg),
+                    //child: Image.asset(model.testImg), 
+                    child: Image.network(photos[1].url),
+                  ), */
+
+                  FutureBuilder<List<Photo>>(
+                    future: model.getLatestPhoto(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) print(snapshot.error);
+
+                      return snapshot.hasData
+                          ? LatestPicture(photos: snapshot.data)
+                          : Center(child: CircularProgressIndicator());
+                    },
                   ),
-                  Padding(
+
+/*                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
                       model.deviceName + ', ' + model.dateAndTime,
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
-                  ),
+                  ), */
                 ],
               ),
             ),
@@ -43,7 +59,7 @@ class PicturesPage extends StatelessWidget {
                 children: <Widget>[
                   ListTile(
                     title: Text(
-                      'Gallery',
+                      model.galleryTitle,
                       style: Theme.of(context).textTheme.headline4,
                     ),
                   ),
@@ -57,18 +73,10 @@ class PicturesPage extends StatelessWidget {
                         },
                         icon: Icon(Icons.airplanemode_active_rounded),
                         label: Text(
-                          'Picture Gallery',
-                          style: TextStyle(fontSize: 18.0),
+                          model.buttonLabel,
+                          style: TextStyle(fontSize: model.buttonFontSize),
                         ),
                       ),
-/*                     ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: Icon(Icons.directions_car_rounded),
-                      label: Text(
-                        'GoPiGo',
-                        style: TextStyle(fontSize: 18.0),
-                      ),
-                    ), */
                     ],
                   ),
                 ],

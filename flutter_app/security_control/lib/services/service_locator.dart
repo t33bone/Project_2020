@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:security_control/services/navigation_service.dart';
+import 'package:security_control/services/picture_service.dart';
 
 /*
   "Using get_it, class types can be registered in two ways.
@@ -17,7 +18,7 @@ import 'package:security_control/services/navigation_service.dart';
 
 GetIt locator = GetIt.instance;
 
-void setupLocator(){
+void setupLocator() {
   locator.registerLazySingleton(() => NavigationService());
+  locator.registerLazySingleton(() => PictureService());
 }
-
