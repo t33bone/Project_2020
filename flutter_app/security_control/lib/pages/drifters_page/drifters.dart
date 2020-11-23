@@ -72,7 +72,14 @@ class MapSection extends StatelessWidget {
                     ),
                   ),
                   Center(
+                    //temp car1
                     heightFactor: 5,
+                    child: Icon(Icons.local_taxi),
+                  ),
+                  Center(
+                    //temp car2
+                    heightFactor: 8,
+                    widthFactor: 5,
                     child: Icon(Icons.local_taxi),
                   ),
                 ],
@@ -161,100 +168,108 @@ Widget _gopigoListTileAnimated(context, GoPiGo device, model) {
     },
     openBuilder: (BuildContext _, VoidCallback openContainer) {
       final _formKey = GlobalKey<FormState>();
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('${device.name} - Settings'),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.done),
-              onPressed: () {
-                //if (_formKey.currentState.validate()) { //validate forms
-                // Process data.
-                model.updateSettings();
-                Navigator.pop(context, true);
-                //}
-              },
-              tooltip: 'Mark as done',
-            )
-          ],
-        ),
-        body: Card(
-          child: Container(
-            padding: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
+      //new viewmodel so we don't rebuild the whole page
+      //before final settings are approved
+      return ViewModelBuilder<GoPiGoSettingsViewModel>.reactive(
+        initialiseSpecialViewModelsOnce: true,
+        builder: (context, model, child) {
+          if (device.id != model.id) model.setdevice(device); //TODO
+          print(
+              'GoPiGoSettingsViewModel for [${device.name}]/[${model.name}] built');
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('${device.name} - Settings'),
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.done),
+                  onPressed: () {
+                    //TODO process data
+
+                    model.updateSettings();
+                    Navigator.pop(context, true);
+                  },
+                  tooltip: 'Mark as done',
+                )
+              ],
             ),
-            child: Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      //key: _formKey,
-                      decoration: InputDecoration(
-                        helperText: 'device.name',
-                        //labelText: 'Name',
-                        border: OutlineInputBorder(),
+            body: ListView(children: [
+              Card(
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    top: 16.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            helperText: 'device.name',
+                            //labelText: 'Name',
+                            border: OutlineInputBorder(),
+                          ),
+                          initialValue: model.name,
+                          onChanged: (String value) {
+                            //TODO make text sanitizer
+                            model.nameTextUpdate(value);
+                          },
+                        ),
                       ),
-                      initialValue: device.name,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        //TODO make text sanitizer
-                        return null;
-                      },
-                    ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.message),
+                        title: Text("setting 2"),
+                        trailing: Checkbox(
+                          value: true,
+                          onChanged: (value) {
+                            value = !value;
+                          },
+                        ),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Text('batterylevel warning'),
+                        title: Slider(
+                          value: model.batterylevel.toDouble(),
+                          min: 0,
+                          max: 100,
+                          divisions: 5,
+                          label:
+                              model.batterylevel.toDouble().round().toString(),
+                          onChanged: (double value) {
+                            model.sliderUpdate(value.round().toInt());
+                          },
+                        ),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.message),
+                        title: Text("setting 2"),
+                        trailing: Checkbox(
+                          value: true,
+                          onChanged: (value) {},
+                        ),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.message),
+                        title: Text("setting 2"),
+                        trailing: Checkbox(
+                          value: true,
+                          onChanged: (value) {},
+                        ),
+                      ),
+                    ],
                   ),
-                  Divider(),
-                  ListTile(
-                    leading: Icon(Icons.message),
-                    title: Text("setting 2"),
-                    trailing: Checkbox(
-                      value: true,
-                      onChanged: (value) {
-                        value = !value;
-                      },
-                    ),
-                  ),
-                  Divider(),
-                  ListTile(
-                    leading: Text('batterylevel warning'),
-                    title: Slider(
-                        value: 25,
-                        min: 0,
-                        max: 100,
-                        divisions: 6,
-                        label: '25',
-                        onChanged: (double value) {}),
-                  ),
-                  Divider(),
-                  ListTile(
-                    leading: Icon(Icons.message),
-                    title: Text("setting 2"),
-                    trailing: Checkbox(
-                      value: true,
-                      onChanged: (value) {},
-                    ),
-                  ),
-                  Divider(),
-                  ListTile(
-                    leading: Icon(Icons.message),
-                    title: Text("setting 2"),
-                    trailing: Checkbox(
-                      value: true,
-                      onChanged: (value) {},
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
+            ]),
+          );
+        },
+        viewModelBuilder: () => GoPiGoSettingsViewModel(),
       );
     },
   );
