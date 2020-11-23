@@ -88,5 +88,40 @@ def getDeviceName(devicename):
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
+@app.route('/api/doori/get/all', methods=['GET'])
+def doori_all():
+    query = "SELECT * FROM doori"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+@app.route('/api/doori/get/deviceID', methods=['GET'])
+def getDooriID():
+    query = "SELECT iddoori FROM doori"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+@app.route('/api/doori/get/<variable>', methods=['GET'])
+def getDoori(variable):
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT {} FROM doori".format(variable)
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+@app.route('/api/doori/post/newDoori', methods=['POST'])
+def postDooriID():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO doori (DoorName, 
+                OpenOrNot) 
+                values ('{}','{}')'''.format(
+                    content['DoorName'], 
+                    content['OpenOrNot'],)
+    db.sqlInsert(query)
+
+    return "Post successful"
+
 if __name__ == "__main__":
 	app.run()
