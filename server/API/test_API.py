@@ -89,18 +89,16 @@ def getDoori(variable):
     data = db.sqlQuery(query)
     return jsonify(data)
 
-@app.route('/api/testi/post/newDoori', methods=['POST'])
+@app.route('/api/doori/post/newDoori', methods=['POST'])
 def postDooriID():
     print (request.is_json)
     content = request.get_json()
     print(content)
     query = '''INSERT INTO doori (DoorName, 
-                OpenOrNot,
-                TimeStamp) 
-                values ('{}','{}','{}')'''.format(
+                OpenOrNot) 
+                values ('{}','{}')'''.format(
                     content['DoorName'], 
-                    content['OpenOrNot'],
-                    content['TimeStamp'])
+                    content['OpenOrNot'],)
     db.sqlInsert(query)
 
     return "Post successful"

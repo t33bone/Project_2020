@@ -1,5 +1,6 @@
 
 #   todo: just read a json instead of asking for a manual input
+#   datetime shenanigans, how does it get it?
 #   Table is in mydb, not in TestDataBase
 #   works only with test_API.py
 
@@ -29,7 +30,7 @@ def getDoori():
 
     #example how to get more specific info with get method
 def getSpecificColumn():
-    columnName = input("Give Column name\n(DoorName, OpenOrNot, TimeStamp)")
+    columnName = raw_input("Give Column name\n(DoorName, OpenOrNot, TimeStamp)")
 
     # url + variable name combines them to one string which is then handled on the API side
     print(getSpecificUrl + columnName)
@@ -44,9 +45,9 @@ def postDoori():
 
     for i in range(2):
         if i == 0:
-            uInput[i] = input("Give the door's name: ")
+            uInput[i] = raw_input("Give the door's name: ")
         if i == 1:
-            uInput[i] = input("Is it open or not 0/1 tinyint: ")
+            uInput[i] = raw_input("Is it open or not 0/1 tinyint: ")
             
     # Example for a json object. For compatibility with server don't change the strings between " "
     jsonExample = {
@@ -61,7 +62,7 @@ def postDoori():
 
     # just a ui type of way to use the methods
 while(True):
-    x = input("1: Get all method \n2: Get specific table\n3: Post method ")
+    x = raw_input("1: Get all method \n2: Get specific table\n3: Post method ")
 
     if int(x) == 2:
         getSpecificColumn()

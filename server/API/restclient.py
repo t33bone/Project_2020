@@ -19,15 +19,15 @@ else:
     getSpecificUrl = 'http://127.0.0.1:5000/api/doori/get/'
     postUrl = 'http://127.0.0.1:5000/api/doori/post/newDoori'
 
-def getDoori():
-    #Example gets json data from url specified above
+def getContent():
+    # Gets json data from url specified above
     getData = requests.get(getUrl)
     
-    #converts the data to json
+    # converts the data to json
     response = getData.json()
     print(response)
 
-    #example how to get more specific info with get method
+    # Get more specific info with get method
 def getSpecificColumn():
     columnName = input("Give Column name\n(DoorName, OpenOrNot, TimeStamp)")
 
@@ -37,9 +37,9 @@ def getSpecificColumn():
     response = getData.json()
     print(response)
 
-def postDoori():
+def postContent():
 
-    #anything regarding inputs can be changed but try to match the amount of data sent in the json Example
+    # anything regarding inputs can be changed but try to match the amount of data sent in the json Example
     uInput = {}
 
     for i in range(2):
@@ -54,8 +54,9 @@ def postDoori():
                     "OpenOrNot": uInput[1],
                   }
     
-    #Sends a post request to url specified in the beginning, that is the server url, don't change
+    # Sends a post request to url specified in the beginning, that is the server url, don't change
     x = requests.post(postUrl, json = jsonExample)
+    # Print returns possible errors (eg. 404) or return returns a success if the post goes through
     print(x)
     return "post success"
 
@@ -66,8 +67,8 @@ while(True):
     if int(x) == 2:
         getSpecificColumn()
     if int(x) == 3:
-        postDoori()
+        postContent()
     if int(x) == 1:
-        getDoori()
+        getContent()
     else:
         continue
