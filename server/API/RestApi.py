@@ -66,7 +66,7 @@ def postDeviceID():
 
 @app.route('/api/doori/get/all', methods=['GET'])
 def doori_all():
-    query = "SELECT * FROM doori"
+    query = "SELECT * FROM doori ORDER BY iddoori DESC LIMIT 500"
     data = db.sqlQuery(query)
     return jsonify(data)
 
