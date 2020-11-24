@@ -6,13 +6,14 @@ import 'package:security_control/services/service_locator.dart';
 import 'package:security_control/models/photo.dart';
 
 class GalleryViewModel extends ChangeNotifier {
-  String _appBarTitle = "Gallery";
+  final String _appBarTitle = "Gallery";
   String _dropDownButtonHint = '  Select a device';
   static Item _selectedGallery;
   double _dropDownIconSize = 30.0;
 
   String get appBarTitle => _appBarTitle;
   String get dropDownButtonHint => _dropDownButtonHint;
+  Item get selectedGallery => _selectedGallery;
   double get dropDownIconSize => _dropDownIconSize;
 
   List<Item> galleries = <Item>[
@@ -24,8 +25,6 @@ class GalleryViewModel extends ChangeNotifier {
     _selectedGallery = selected;
     notifyListeners();
   }
-
-  Item get selectedGallery => _selectedGallery;
 
   Future<List<Photo>> getPhotos() =>
       locator<PictureService>().fetchPhotos(http.Client());
