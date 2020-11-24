@@ -1,265 +1,315 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart'; //maps
-import 'package:latlong/latlong.dart';
+import 'drifters_viewmodel.dart';
+import 'package:stacked/stacked.dart';
+import 'package:animations/animations.dart';
 
-//TODO: conform to servers model of GoPiGo
-class GoPiGo {
-  String name;
-  int batterylevel;
-  GoPiGo(this.name, this.batterylevel);
-}
-
-class DriftersPage extends StatefulWidget {
-  @override
-  _DriftersPageState createState() => _DriftersPageState();
-}
-
-class _DriftersPageState extends State<DriftersPage> {
-  //TODO: get rid of static test names
-  final gopigolist = <GoPiGo>[];
-
-  // static const LatLng _center = const LatLng(65.059029, 25.466243);
-
+class DriftersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        //TODO FINAL: replace temp title
-        title: Text('DriftersPage'),
-      ),
-      body: ListView(
-        children: <Widget>[
-          _mapSection(),
-          _statusSection(),
-          _gohomeSection(),
-        ],
-      ),
+    return ViewModelBuilder<DriftersViewModel>.reactive(
+      builder: (context, model, child) {
+        print('DriftersPage / DriftersViewModel built');
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(model.title),
+          ),
+          body: ListView(
+            children: [
+              MapSection(),
+              StatusSection(),
+              GoHomeSection(),
+            ],
+          ),
+        );
+      },
+      viewModelBuilder: () => DriftersViewModel(),
     );
   }
+}
 
-  Widget _mapSection() {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: SizedBox(
-        //TODO make this dynamic size for bigger/smaller screens
-        height: 300.0,
-        width: 350.0,
-        child: Stack(
-          children: [
-            new FlutterMap(
-              options: new MapOptions(
-                center: new LatLng(65.059029, 25.466243),
-                zoom: 15.0,
-              ),
-              layers: [
-                new TileLayerOptions(
-                    urlTemplate:
-                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    subdomains: ['a', 'b', 'c']),
-                new MarkerLayerOptions(
-                  markers: [
-                    new Marker(
-                      width: 26.0,
-                      height: 26.0,
-                      point: LatLng(65.060803, 25.469838),
-                      builder: (ctx) => new Container(
-                        child: new FlutterLogo(),
-                      ),
-                    ),
-                    new Marker(
-                      width: 26.0,
-                      height: 26.0,
-                      point: LatLng(65.061405, 25.464516),
-                      builder: (ctx) => new Container(
-                        child: new FlutterLogo(),
-                      ),
-                    ),
-                    new Marker(
-                      width: 26.0,
-                      height: 26.0,
-                      point: LatLng(65.059292, 25.467799),
-                      builder: (ctx) => new Container(
-                        child: new FlutterLogo(),
-                      ),
-                    ),
-                    new Marker(
-                      width: 26.0,
-                      height: 26.0,
-                      point: LatLng(65.058998, 25.463282),
-                      builder: (ctx) => new Container(
-                        child: new FlutterLogo(),
-                      ),
-                    )
-                  ],
-                ),
-              ],
-              children: <Widget>[
-                TileLayerWidget(
-                    options: TileLayerOptions(
-                        urlTemplate:
-                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        subdomains: ['a', 'b', 'c'])),
-                MarkerLayerWidget(
-                    options: MarkerLayerOptions(
-                  markers: [
-                    Marker(
-                      width: 26.0,
-                      height: 26.0,
-                      point: LatLng(65.058998, 25.461282),
-                      builder: (ctx) => Container(
-                        child: FlutterLogo(),
-                      ),
-                    ),
-                  ],
-                )),
-              ],
-            ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Column(
+class MapSection extends StatelessWidget {
+  MapSection({Key key}) : super(key: key);
+//TODO make icon placements update on the map with new data from server
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder.reactive(
+        builder: (context, model, child) {
+          print('MapSection built');
+          return Card(
+            clipBehavior: Clip.antiAlias,
+            child: SizedBox(
+              //TODO make this dynamic size for bigger/smaller screens
+              height: model.height,
+              //width: 300.0,
+              child: Stack(
                 children: [
                   SizedBox(
-                    height: 32.0,
-                    child: Card(
-                      //color: Theme.of(context).backgroundColor,
-                      child: Container(
-                        //padding: const EdgeInsets.all(8),
-                        child: Text('Map Section goes Here',
-                            style: Theme.of(context).textTheme.headline6),
-                      ),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Image.asset(model.map),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusSection() {
-    //TODO: get rid of static test names & GoPiGo
-    final List<String> _nametest = <String>['te321', 'p444ka', 'thjn'];
-    final List<GoPiGo> gopigolisttest = <GoPiGo>[
-      GoPiGo('test car1', 23),
-      GoPiGo('BoB', 46),
-      GoPiGo('gopigo5', 75)
-    ];
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            //TODO FINAL: remove text
-            Text(
-              'GoPiGo Section Here',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            for (var i in gopigolisttest)
-              Column(
-                children: [
-                  Divider(),
-                  _goPiGotestListTile(i),
-                ],
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _pushGoPiGoSettings() {
-    Navigator.of(context).push(
-      MaterialPageRoute<GoPiGo>(
-        builder: (BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('test settings'),
-            ),
-            body: Card(
-              clipBehavior: Clip.antiAlias,
-              child: ListView(
-                children: [
-                  Text("setting 2"),
-                  Divider(),
-                  Text("setting 3"),
-                  Divider(),
-                  Text("data"),
-                  //context.dependOnInheritedWidgetOfExactType<ListTile>(),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Stack(
+                      children: [
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 32.0,
+                              child: Card(
+                                child: Container(
+                                  child: Text(model.title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline6),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Center(
+                    //temp car1
+                    heightFactor: 5,
+                    child: Icon(Icons.local_taxi),
+                  ),
+                  Center(
+                    //temp car2
+                    heightFactor: 8,
+                    widthFactor: 5,
+                    child: Icon(Icons.local_taxi),
+                  ),
                 ],
               ),
             ),
           );
         },
-      ),
-    );
+        viewModelBuilder: () => MapSectionViewModel());
   }
+}
 
-  //better version of gopigotest
-  //TODO rename this
-  Widget _goPiGotestListTile(GoPiGo device) {
-    return ListTile(
-      leading: Icon(
-        Icons.commute,
-      ),
-      title: Text(
-        device.name,
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
-      trailing: Container(
-        //icon sizes adjusted to match material design
-        width: 48,
-        height: 48,
-        padding: EdgeInsets.symmetric(vertical: 4.0),
-        alignment: Alignment.center,
-        child: Row(
-          children: [
-            Icon(
-              Icons.battery_std,
-            ),
-            Text(
-              //TODO: add % to end of string
-              device.batterylevel.toString(),
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-          ],
-        ),
-      ),
-      onTap: _pushGoPiGoSettings,
-    );
-  }
-
-  Widget _gohomeSection() {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).accentColor,
-                      ),
-                      onPressed: () {
-                        //TODO: return home call sent to GoPiGo:s
-                      },
-                      child: Text('Return Home',
-                          style: Theme.of(context).textTheme.button),
-                    ),
+class StatusSection extends StatelessWidget {
+  StatusSection({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<StatusSectionViewModel>.reactive(
+      builder: (context, model, child) {
+        print('StatusSectionViewModel built');
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          child: SizedBox(
+            //height: 255, //TODO could be problem to have fixed size
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                children: [
+                  Text(
+                    model.statusSectionTitle,
+                    style: Theme.of(context).textTheme.headline6,
                   ),
-                ),
+                  for (var i in model.gopigolist)
+                    Column(
+                      children: [
+                        Divider(),
+                        _gopigoListTileAnimated(context, i, model),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      viewModelBuilder: () => StatusSectionViewModel(),
+    );
+  }
+}
+
+Widget _gopigoListTileAnimated(context, GoPiGo device, model) {
+  print('[${device.name}] section built in _gopigoListTileAnimated');
+
+  return OpenContainer(
+    transitionType: ContainerTransitionType.fade,
+    closedElevation: 0.0,
+    closedBuilder: (BuildContext _, VoidCallback openContainer) {
+      //if shown info amount changes, consider custom widget
+      return ListTile(
+        leading: Icon(
+          Icons.commute, //temp icon
+        ),
+        title: Text(
+          device.name,
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+        trailing: Container(
+          //icon sizes adjusted to match material design
+          width: 58, //TODO FINAL these could be problematic with scales
+          height: 48,
+          padding: EdgeInsets.symmetric(vertical: 4.0),
+          alignment: Alignment.center,
+          child: Row(
+            children: [
+              //TODO make charge icons dynamic to the charge %
+              Icon(
+                Icons.battery_std,
+              ),
+              Text(
+                device.batterylevel.toString() + '%',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            ],
+          ),
+        ),
+        onTap: openContainer,
+      );
+    },
+    openBuilder: (BuildContext _, VoidCallback openContainer) {
+      final _formKey = GlobalKey<FormState>();
+      //new viewmodel so we don't rebuild the whole page
+      //before final settings are approved
+      return ViewModelBuilder<GoPiGoSettingsViewModel>.reactive(
+        initialiseSpecialViewModelsOnce: true,
+        builder: (context, model, child) {
+          if (device.id != model.id) model.setdevice(device); //TODO
+          print(
+              'GoPiGoSettingsViewModel for [${device.name}]/[${model.name}] built');
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('${device.name} - Settings'),
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.done),
+                  onPressed: () {
+                    //TODO process data
+
+                    model.updateSettings();
+                    Navigator.pop(context, true);
+                  },
+                  tooltip: 'Mark as done',
+                )
               ],
             ),
-          )
-        ],
-      ),
+            body: ListView(children: [
+              Card(
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    top: 16.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            helperText: 'device.name',
+                            //labelText: 'Name',
+                            border: OutlineInputBorder(),
+                          ),
+                          initialValue: model.name,
+                          onChanged: (String value) {
+                            //TODO make text sanitizer
+                            model.nameTextUpdate(value);
+                          },
+                        ),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.message),
+                        title: Text("setting 2"),
+                        trailing: Checkbox(
+                          value: true,
+                          onChanged: (value) {
+                            value = !value;
+                          },
+                        ),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Text('batterylevel warning'),
+                        title: Slider(
+                          value: model.batterylevel.toDouble(),
+                          min: 0,
+                          max: 100,
+                          divisions: 5,
+                          label:
+                              model.batterylevel.toDouble().round().toString(),
+                          onChanged: (double value) {
+                            model.sliderUpdate(value.round().toInt());
+                          },
+                        ),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.message),
+                        title: Text("setting 2"),
+                        trailing: Checkbox(
+                          value: true,
+                          onChanged: (value) {},
+                        ),
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.message),
+                        title: Text("setting 2"),
+                        trailing: Checkbox(
+                          value: true,
+                          onChanged: (value) {},
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
+          );
+        },
+        viewModelBuilder: () => GoPiGoSettingsViewModel(),
+      );
+    },
+  );
+}
+
+class GoHomeSection extends StatelessWidget {
+  const GoHomeSection({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder.reactive(
+      builder: (context, model, child) {
+        print('GoHomeSectionViewModel built');
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Theme.of(context).accentColor,
+                          ),
+                          onPressed: model.onPressed,
+                          child: Text(model.buttonTitle,
+                              style: Theme.of(context).textTheme.button),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      },
+      viewModelBuilder: () => GoHomeSectionViewModel(),
     );
   }
 }
