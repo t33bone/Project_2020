@@ -162,13 +162,14 @@ ThemeData getAppTheme(BuildContext context, bool isDark) {
   // Define any global styles etc. here
   // Check parameters from: https://api.flutter.dev/flutter/material/ThemeData/copyWith.html
   themeD = themeD.copyWith(
-      hintColor: hintCol,
-      inputDecorationTheme: InputDecorationTheme(
-        labelStyle: TextStyle(
-          color: hintCol,
-        ),
-        border: UnderlineInputBorder(),
+    hintColor: hintCol,
+    inputDecorationTheme: InputDecorationTheme(
+      labelStyle: TextStyle(
+        color: hintCol,
       ),
+      border: UnderlineInputBorder(),
+    ),
+    iconTheme: IconThemeData(color: Colors.grey),
   );
 
   return themeD;
