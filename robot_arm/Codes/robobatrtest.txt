@@ -1,0 +1,45 @@
+ Program
+   Robot Program
+     sct_conn≔socket_open("169.254.100.220", 29998)
+     MoveL
+       strt_pos
+     Loop
+       sct_msg≔socket_read_ascii_float(2)
+       If sct_sg[0]≟1
+         MoveJ
+           cam_pos
+         Scan Code
+           If a code is found
+             'Insert actions here'
+             If rq_code_string≟"1"
+               qr_to_int≔1
+             If rq_code_string≟"2"
+               qr_to_int≔2
+             If rq_code_string≟"3"
+               qr_to_int≔3
+           If no code found
+             'Optional'
+             socket_send_string("No Code, Please Advice")
+         If sct_msg[1]≟qr_to_int
+           Cam Locate
+             For object(s) found
+               MoveL
+                 appr
+                 grp
+                 Gripper Close (1)
+             If no object found
+               'Optional'
+           MoveJ
+             cam_pos
+           Cam Locate
+             For object(s) found
+               MoveL
+                 apprDck
+                 drpDck
+                 Gripper Open (1)
+             If no object found
+               'Optional'
+         Else
+           socket_send_string("Wrong Code, Please Advice")
+         MoveL
+           strt_pos

@@ -1,0 +1,77 @@
+ Program
+   Robot Program
+     sct_connect≔socket_open("169.254.100.220", 29998)
+     MoveL
+       snap_pos
+     Loop
+       sct_read≔socket_read_ascii_float(2)
+       grp_closed≔0
+       If sct_read[0]≟1
+         Wait: 2.0
+         MoveJ
+           snap_pos
+         Scan Code
+           If a code is found
+             'Insert actions here'
+             If rq_code_string≟"1"
+               qr_to_int≔1
+             ElseIf rq_code_string≟"2"
+               qr_to_int≔2
+             ElseIf rq_code_string≟"3"
+               qr_to_int≔3
+             ElseIf rq_code_string≟"4"
+               qr_to_int≔4
+             ElseIf rq_code_string≟"5"
+               qr_to_int≔5
+             ElseIf rq_code_string≟"6"
+               qr_to_int≔6
+           If no code found
+             'Optional'
+             socket_send_string("No Code, Please Advice")
+         If sct_read[1]≟qr_to_int
+           Cam Locate
+             For object(s) found
+               MoveL
+                 appr
+                 grp
+                 Gripper Close (1)
+                 grp_closed≔1
+                 appr
+             If no object found
+               'Optional'
+           If grp_closed≟1
+             MoveJ
+               snap_pos2
+             Cam Locate
+               For object(s) found
+                 Cam Locate
+                   For object(s) found
+                     MoveL
+                       appr_dck
+                       drp_dck
+                       Gripper Open (1)
+                       grp_closed≔0
+                       appr_dck
+                   If no object found
+                     'Optional'
+                     socket_send_string("No Dock, Please Advice")
+                 MoveL
+                   n_btr_app
+                   n_btr_grp
+                   Gripper Close (1)
+                   n_btr_app
+               If no object found
+                 'Optional'
+             Cam Locate
+               For object(s) found
+                 MoveL
+                   l_app
+                   l_drp
+                   Gripper Open (1)
+                   l_app
+               If no object found
+                 'Optional'
+         Else
+           socket_send_string("Wrong Code, Please Advice")
+         MoveL
+           snap_pos
