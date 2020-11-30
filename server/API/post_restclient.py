@@ -1,7 +1,7 @@
 
 # Scans a folder for json or txt-files, POSTs them, and moves them to an archive folder
 # Other files, that are not intended for the DB, should not be kept at the designated folders
-# Works with RestApi.py, new address routes should be added there
+# Works with RestApi.py, new address routes should be added there (server side)
 # Tables are in mydb in mysql (configured by RestApi.py and databaseConnect.py)
 
 import requests
@@ -10,7 +10,9 @@ import os, os.path
 import shutil
 import time
 
+# Set a folder from where program reads json/txt files and posts them to the database
 directory = "D:\\OneDrive - Oulun ammattikorkeakoulu\\S2020_Projekti\\jsons\\"
+# Set an archive folder where program moves files that are posted
 archive = "D:\\OneDrive - Oulun ammattikorkeakoulu\\S2020_Projekti\\jsonarchive\\"
 
 local = False

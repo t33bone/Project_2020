@@ -25,6 +25,7 @@ def home():
 
 
 #region Testmethods
+
 @app.route('/api/testi/get/all', methods=['GET'])
 def test_all():
     query = "SELECT * FROM Testi"
@@ -118,6 +119,29 @@ def getDeviceName(devicename):
     query = "SELECT * FROM Testi where DeviceName = {}".format(devicename)
     data = db.sqlQuery(query)
     return jsonify(data)
+
+# New queries for TestDatabase start
+#
+@app.route('/api/devices/get/devicelocationsstatus', methods=['GET'])
+def getDeviceLocationStatus():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM DeviceLocationsStatus"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+@app.route('/api/devices/get/latestcaratchargestation', methods=['GET'])
+def getDeviceLatestCarAtChargeStation():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM LatestCarAtChargeStation"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+#
+# End
 
 @app.errorhandler(404)
 def page_not_found(e):

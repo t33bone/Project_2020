@@ -11,14 +11,16 @@ import time
 
 # Set a folder where program saves a file into which GET json data is stored
 saveget_directory = "D:\\OneDrive - Oulun ammattikorkeakoulu\\S2020_Projekti\\savejson\\"
-file_name = "newest_data"
+file_name = "location_status"
+file_name2 = "chargestation"
 
 local = False
 
 if local == False:
-    getUrl = 'http://195.148.21.106/api/doori/get/all'
+    getUrl = 'http://195.148.21.106/api/devices/get/devicelocationsstatus'
+    getUrl2 = 'http://195.148.21.106/api/devices/get/latestcaratchargestation'
 else:
-    getUrl = 'http://127.0.0.1:5000/api/doori/get/all'
+    getUrl = 'http://127.0.0.1:5000/api/devices/get/devicelocationsstatus'
 
 while(True):
    # Gets json data from url specified above
@@ -30,4 +32,13 @@ while(True):
     with open(fullpath, "w") as json_file:
         json.dump(response, json_file)
         print("Get data received and saved to: ", saveget_directory)
+
+    getData = requests.get(getUrl2)
+    response = getData.json()
+    
+    fullpath = os.path.join(saveget_directory, file_name2+".json")
+    with open(fullpath, "w") as json_file:
+        json.dump(response, json_file)
+        print("Get data received and saved to: ", saveget_directory)
+        
     time.sleep(5)
