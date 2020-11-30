@@ -122,6 +122,7 @@ def getDeviceName(devicename):
 
 # New queries for TestDatabase start
 #
+
 @app.route('/api/devices/get/devicelocationsstatus', methods=['GET'])
 def getDeviceLocationStatus():
     print (request.is_json)
@@ -139,6 +140,34 @@ def getDeviceLatestCarAtChargeStation():
     query = "SELECT * FROM LatestCarAtChargeStation"
     data = db.sqlQuery(query)
     return jsonify(data)
+
+@app.route('/api/devices/post/location', methods=['POST'])
+def postLocation():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Location (Segment, 
+                Devices_idDevice) 
+                values ('{}','{}')'''.format(
+                    content['Segment'], 
+                    content['Devices_idDevice'])
+    db.sqlInsert(query)
+
+    return "Post successful"
+
+@app.route('/api/devices/post/status', methods=['POST'])
+def postStatus():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Charger_Status (Status, 
+                Devices_idDevice) 
+                values ('{}','{}')'''.format(
+                    content['Status'], 
+                    content['Devices_idDevice'])
+    db.sqlInsert(query)
+
+    return "Post successful"
 
 #
 # End
