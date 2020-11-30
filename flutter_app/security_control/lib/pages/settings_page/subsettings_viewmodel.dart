@@ -3,10 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:security_control/router.gr.dart';
 import 'package:security_control/services/navigation_service.dart';
 import 'package:security_control/services/service_locator.dart';
+import 'package:security_control/services/local_storage_service.dart';
 
 class SubSettingsViewModel extends ChangeNotifier {
 
   NavigationService _navigationService = locator<NavigationService>();
+  LocalStorageService _localStorageService = locator<LocalStorageService>();
 
   String _serverSettingsLabel = "Server settings";
   String _notificationSettingsLabel = "Notifications";
@@ -53,7 +55,7 @@ class SubSettingsViewModel extends ChangeNotifier {
   double _serverUpdateInterval = 5;
   double _maxServerUpdateInterval = 120;
   double _minServerUpdateInterval = 1;
-  TextEditingController _serverAddressEditingController = new TextEditingController();
+  TextEditingController _serverAddressEditingController = TextEditingController();
   String _serverAddress = "192.168.0.1";
   String _serverAddressDialogTitle = "Set server address";
   String _serverAddressDialogHintLabel = "E.g. 192.168.0.1";
@@ -73,12 +75,46 @@ class SubSettingsViewModel extends ChangeNotifier {
   String get serverAddressLabel => _serverAddressLabel;
   String get serverAddress => _serverAddress;
 
+  //TODO: Demo, remove:
+  String _goPiGoId;
+  int _goPiGoBattery;
+  int _goPiGoLocation;
+  GoPiGoExample _goPiGo;
+  GoPiGoExample get goPiGo => _goPiGo;
+
+  void initialise() {
+
+    _localStorageService.serverAddress.listen((value) {
+      _serverAddress = value;
+      notifyListeners();
+    });
+
+    //TODO: Demo, remove:
+    _localStorageService.goPiGoExampleString.listen((value) {
+      _goPiGo = _localStorageService.goPiGoExample;
+      notifyListeners();
+    });
+    _goPiGo = _localStorageService.goPiGoExample;
+    //_localStorageService.goPiGoExample = _goPiGo;
+    //setServerAddress();
+    _serverUpdateInterval = _localStorageService.serverUpdateInterval.getValue().toDouble();
+  }
+
   setServerAddress(){
     _serverAddress = _serverAddressEditingController.text;
-    notifyListeners();
+    _localStorageService.serverAddress.setValue(_serverAddress);
+    //notifyListeners(); //not needed I think
   }
+
+  // Call this to update the interval to viewmodel
+  // YOU MUST CALL saveServerUpdateInterval() later to save to preferences!
   setServerUpdateInterval(double value){
     _serverUpdateInterval = value;
+    notifyListeners();
+  }
+  // Save value to preferences
+  saveServerUpdateInterval(){
+    _localStorageService.serverUpdateInterval.setValue(_serverUpdateInterval.round());
     notifyListeners();
   }
 

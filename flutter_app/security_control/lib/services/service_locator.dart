@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:security_control/services/navigation_service.dart';
 import 'package:security_control/services/picture_service.dart';
+import 'package:security_control/services/local_storage_service.dart';
 
 /*
   "Using get_it, class types can be registered in two ways.
@@ -18,7 +19,11 @@ import 'package:security_control/services/picture_service.dart';
 
 GetIt locator = GetIt.instance;
 
-void setupLocator() {
+Future setupLocator() async{
   locator.registerLazySingleton(() => NavigationService());
   locator.registerLazySingleton(() => PictureService());
+
+  var instance = await LocalStorageService.getInstance();
+  locator.registerSingleton<LocalStorageService>(instance);
+  //locator.registerLazySingleton(() => LocalStorageService());
 }
