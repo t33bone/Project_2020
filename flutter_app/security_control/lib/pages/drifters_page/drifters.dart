@@ -128,12 +128,13 @@ class StatusSection extends StatelessWidget {
   }
 }
 
-Widget _gopigoListTileAnimated(context, GoPiGo device, model) {
+Widget _gopigoListTileAnimated(context, device, model) {
   print('[${device.name}] section built in _gopigoListTileAnimated');
 
   return OpenContainer(
     transitionType: ContainerTransitionType.fade,
     closedElevation: 0.0,
+    closedColor: Theme.of(context).cardColor,
     closedBuilder: (BuildContext _, VoidCallback openContainer) {
       //if shown info amount changes, consider custom widget
       return ListTile(
