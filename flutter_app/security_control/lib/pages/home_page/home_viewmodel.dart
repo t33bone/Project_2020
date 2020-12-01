@@ -2,31 +2,46 @@ import 'package:security_control/router.gr.dart';
 import 'package:security_control/services/navigation_service.dart';
 import 'package:security_control/services/service_locator.dart';
 
-import 'home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 class HomeViewModel extends ChangeNotifier {
   NavigationService _navigationService = locator<NavigationService>();
-  int _selectedDestination = 0;
+  String _appBarTitle = "Security Control";
   String _accountName = "Test User";
   String _accountEmail = "TestUser@email.com";
+  double _avatarFontSize = 40.0;
+  String _serverConnectionLabel = "Server connection";
+  String _securityStatusLabel = "Security Status";
+  double _labelFontSize = 25.0;
   String _serverOnline = "Online";
   String _serverOffline = "Offline";
   bool _serverConnected = true;
   String _noIntruders = "No intruders";
   String _intruders = "Intruder!";
+  String _actionRequiredLabel = " action(s) required";
+  String _noActionRequiredLabel = "Everything OK";
   bool _intruderAlert = true;
+  String _deviceConnected = "CONNECTED";
+  String _deviceDisconnected = "DISCONNECTED";
 
-  int get selectedDestination => _selectedDestination;
+  String get appBarTitle => _appBarTitle;
   String get accountName => _accountName;
   String get accountEmail => _accountEmail;
+  double get avatarFontSize => _avatarFontSize;
+  String get serverConnectionLabel => _serverConnectionLabel;
+  String get securityStatusLabel => _securityStatusLabel;
+  double get labelFontSize => _labelFontSize;
   String get serverOnline => _serverOnline;
   String get serverOffline => _serverOffline;
   bool get serverConnected => _serverConnected;
   String get noIntruders => _noIntruders;
   String get intruders => _intruders;
   bool get intruderAlert => _intruderAlert;
+  String get actionRequiredLabel => _actionRequiredLabel;
+  String get noActionRequiredLabel => _noActionRequiredLabel;
+  String get deviceConnected => _deviceConnected;
+  String get deviceDisconnected => _deviceDisconnected;
 
   List<MyDrawerItems> drawerItems = <MyDrawerItems>[
     const MyDrawerItems('Drifters', Icon(Icons.directions_car_rounded)),
@@ -63,6 +78,20 @@ class HomeViewModel extends ChangeNotifier {
   List<String> actionsRequired = <String>[
     'Call 112',
     'Run',
+    'testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
   ];
 
   List<Devices> devicesList = <Devices>[
@@ -77,8 +106,52 @@ class HomeViewModel extends ChangeNotifier {
     Devices(9, 'Auto7', 49, true),
   ];
 
-  void showRequiredActions() {
-    //Show required actions from list
+  showRequiredActions(BuildContext context) {
+    Widget clearButton = FlatButton(
+      child: Text("CLEAR"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        //clear actionsrequired
+      },
+    );
+    Widget backButton = FlatButton(
+      child: Text("BACK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    AlertDialog actions = AlertDialog(
+      scrollable: true,
+      title: Text("Required action(s)"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width * 0.75,
+            height: MediaQuery.of(context).size.width * 0.25,
+            child: ListView.builder(
+              itemCount: actionsRequired.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(actionsRequired[index]),
+                  //onTap: () =>
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        backButton,
+        clearButton,
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return actions;
+      },
+    );
   }
 }
 

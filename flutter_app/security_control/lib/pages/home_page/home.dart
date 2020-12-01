@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
       builder: (context, model, child) => Scaffold(
         appBar: AppBar(
           // TO BE REPLACED BY UNIVERSAL APPBAR
-          title: Text('Security Control'),
+          title: Text(model.appBarTitle),
         ),
         drawer: Drawer(
           child: Column(
@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
                   backgroundColor: Colors.white,
                   child: Text(
                     model.accountName[0],
-                    style: TextStyle(fontSize: 40.0),
+                    style: TextStyle(fontSize: model.avatarFontSize),
                   ),
                 ),
               ),
@@ -66,14 +66,14 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   children: [
                     ListTile(
-                      title: Text('Server connection',
+                      title: Text(model.serverConnectionLabel,
                           style: Theme.of(context).textTheme.headline6),
                       trailing: model.serverConnected == true
                           ? Text(
                               model.serverOnline,
                               style: TextStyle(
                                 color: Theme.of(context).primaryColor,
-                                fontSize: 25.0,
+                                fontSize: model.labelFontSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             )
@@ -81,20 +81,20 @@ class HomePage extends StatelessWidget {
                               model.serverOffline,
                               style: TextStyle(
                                 color: Theme.of(context).accentColor,
-                                fontSize: 25.0,
+                                fontSize: model.labelFontSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                     ),
                     ListTile(
-                      title: Text('Security status',
+                      title: Text(model.securityStatusLabel,
                           style: Theme.of(context).textTheme.headline6),
                       trailing: model.intruderAlert == false
                           ? Text(
                               model.noIntruders,
                               style: TextStyle(
                                 color: Theme.of(context).primaryColor,
-                                fontSize: 25.0,
+                                fontSize: model.labelFontSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             )
@@ -102,7 +102,7 @@ class HomePage extends StatelessWidget {
                               model.intruders,
                               style: TextStyle(
                                 color: Theme.of(context).accentColor,
-                                fontSize: 25.0,
+                                fontSize: model.labelFontSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -118,10 +118,10 @@ class HomePage extends StatelessWidget {
                           : Icon(Icons.check_circle),
                       title: model.intruderAlert == true
                           ? Text(model.actionsRequired.length.toString() +
-                              ' action(s) required')
-                          : Text('Everything OK'),
+                              model.actionRequiredLabel)
+                          : Text(model.noActionRequiredLabel),
                       onTap: () => model.intruderAlert == true
-                          ? model.showRequiredActions()
+                          ? model.showRequiredActions(context)
                           : null,
                     ),
                   ],
@@ -138,6 +138,8 @@ class HomePage extends StatelessWidget {
                           width:
                               58, //TODO FINAL these could be problematic with scales
                           height: 48,
+                          // width: MediaQuery.of(context).size.width * 0.15,
+                          // height: MediaQuery.of(context).size.width * 0.25,
                           padding: EdgeInsets.symmetric(vertical: 4.0),
                           alignment: Alignment.center,
                           child: Row(
@@ -161,13 +163,13 @@ class HomePage extends StatelessWidget {
                         ),
                         trailing: model.devicesList[i].connected == true
                             ? Text(
-                                'CONNECTED',
+                                model.deviceConnected,
                                 style: TextStyle(
                                     color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold),
                               )
                             : Text(
-                                'DISCONNECTED',
+                                model.deviceDisconnected,
                                 style: TextStyle(
                                     color: Theme.of(context).accentColor,
                                     fontWeight: FontWeight.bold),
