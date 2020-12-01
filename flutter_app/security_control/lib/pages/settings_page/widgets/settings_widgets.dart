@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -46,6 +47,7 @@ Widget menuSliderListItem(
   double valueToFollow,
   double maxValue,
   double minValue,
+    [Function actionOnRelease]
 ) {
   return new Padding(
       padding: EdgeInsets.all(16),
@@ -76,13 +78,17 @@ Widget menuSliderListItem(
                         label: valueToFollow.round().toString(),
                         onChanged: (double value) {
                           action(value);
-                        }),
+                        },
+                        onChangeEnd: actionOnRelease == null ? null : actionOnRelease,  // if action defined, call it
+                    ),
+
                   ),
                 ]))
       ]));
 }
 
 Widget requestTextAlertDialog(
+    BuildContext context,
     String title,
     String hint,
     String confirmButtonLabel,
@@ -100,8 +106,9 @@ Widget requestTextAlertDialog(
       ),
     ),
     actions: [
-      FlatButton(onPressed: confirmAction(), child: Text(confirmButtonLabel)),
-      FlatButton(onPressed: () {}, child: Text(cancelButtonLabel))
+      FlatButton(onPressed: (){confirmAction();Navigator.of(context).pop();}, child: Text(confirmButtonLabel)),
+      FlatButton(onPressed: (){Navigator.of(context).pop();}, child: Text(cancelButtonLabel))
     ],
   );
 }
+

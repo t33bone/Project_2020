@@ -11,6 +11,7 @@ import 'package:security_control/services/service_locator.dart';
 // Only set the routes, navigation, themes etc.
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized(); // Needed to avoid error with servicesbinding...
   setupLocator();
   runApp(MyApp());
 }

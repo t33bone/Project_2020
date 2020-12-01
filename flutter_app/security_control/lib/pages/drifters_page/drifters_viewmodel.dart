@@ -1,19 +1,5 @@
 import 'package:stacked/stacked.dart';
-
-//TODO: conform to servers model of GoPiGo
-class GoPiGo {
-  int _id;
-  String _name;
-  int _batterylevel;
-  GoPiGo(this._id, this._name, this._batterylevel);
-  String get name => _name;
-  int get id => _id;
-  int get batterylevel => _batterylevel;
-  void setBatteryLevel(int i) => _batterylevel = i;
-  void setName(String newName) {
-    _name = newName;
-  }
-}
+import 'package:security_control/models/gopigo.dart';
 
 class DriftersViewModel extends BaseViewModel {
   String _title = "DriftersPage<temp>"; //TODO FINAL: replace temp title
@@ -85,20 +71,20 @@ class GoPiGoSettingsViewModel extends BaseViewModel {
   Object get device => _tempDevice;
 
   void sliderUpdate(int newValue) {
-    _tempDevice._batterylevel = newValue;
+    _tempDevice.setBatteryLevel(newValue);
     notifyListeners();
   }
 
   void nameTextUpdate(String newText) {
-    _tempDevice._name = newText;
+    _tempDevice.setName(newText);
     notifyListeners();
   }
 
   //TODO there is a better way to do this?
   void setdevice(GoPiGo device) {
-    _tempDevice._name = device._name;
-    _tempDevice._id = device._id;
-    _tempDevice._batterylevel = device._batterylevel;
+    _tempDevice.setName(device.name);
+    _tempDevice.setId(device.id);
+    _tempDevice.setBatteryLevel(device.batterylevel);
     _device = device;
     print('setdevice ${device.name}');
   }
@@ -106,8 +92,8 @@ class GoPiGoSettingsViewModel extends BaseViewModel {
   //TODO there is a better way to do this?
   void updateSettings() {
     print('GoPiGoSettingsViewModel/updateSettings');
-    _device._batterylevel = _tempDevice._batterylevel;
-    _device._name = _tempDevice._name;
+    _device.setBatteryLevel(_tempDevice.batterylevel);
+    _device.setName(_tempDevice.name);
   }
 }
 
