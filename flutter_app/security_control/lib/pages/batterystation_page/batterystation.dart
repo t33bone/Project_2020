@@ -13,9 +13,11 @@ class BatteryStationPage extends StatelessWidget {
           appBar: AppBar(
             title: Text(model.title),
           ),
-          body: Container(
-            padding: EdgeInsets.all(8),
-            child: StatusSection(),
+          body: ListView(
+            children: [
+              StatusSection(),
+              HistorySection(),
+            ],
           ),
         );
       },
@@ -30,49 +32,36 @@ class StatusSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<StatusSectionViewModel>.reactive(
       builder: (context, model, child) {
-        model.lastCharged();
         print('StatusSectionViewModel built');
         return Card(
           clipBehavior: Clip.antiAlias,
           child: SizedBox(
             child: Container(
               padding: const EdgeInsets.all(8),
-              child: ListView(
+              child: Column(
                 children: [
                   Text(
                     model.statusSectionTitle,
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  // for (var i in model.gopigolist)
-
-                  ListTile(
-                    leading: Icon(
-                      Icons.commute, //temp icon
-                    ),
-                    title: Text(
-                      model.temppp.name,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    trailing: Container(
-                      //icon sizes adjusted to match material design
-                      width:
-                          58, //TODO FINAL these could be problematic with scales
-                      height: 48,
-                      padding: EdgeInsets.symmetric(vertical: 4.0),
-                      alignment: Alignment.center,
-                      child: Row(
-                        children: [
-                          //TODO make charge icons dynamic to the charge %
-                          Icon(
-                            Icons.battery_std,
-                          ),
-                          Text(
-                            model.temppp.batterylevel.toString() + '%',
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ),
-                        ],
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.commute),
+                      Text(model.recentDevice.getName,
+                          style: Theme.of(context).textTheme.bodyText1),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        alignment: Alignment.center,
+                        child: Row(
+                          children: [
+                            Icon(Icons.battery_std),
+                            Text('<TIMESTAMP> ',
+                                style: Theme.of(context).textTheme.bodyText2),
+                          ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
@@ -82,5 +71,52 @@ class StatusSection extends StatelessWidget {
       },
       viewModelBuilder: () => StatusSectionViewModel(),
     );
+  }
+}
+
+class HistorySection extends StatelessWidget {
+  HistorySection({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<HistorySectionViewModel>.reactive(
+        builder: (context, model, child) {
+          print('MapSection built');
+          return Card(
+            clipBehavior: Clip.antiAlias,
+            child: SizedBox(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Text(
+                      model.historySectionTitle,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.commute),
+                        Text('model.recentDevice.getName',
+                            style: Theme.of(context).textTheme.bodyText1),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 4.0),
+                          alignment: Alignment.center,
+                          child: Row(
+                            children: [
+                              Icon(Icons.battery_std),
+                              Text('<TIMESTAMP> ',
+                                  style: Theme.of(context).textTheme.bodyText2),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+        viewModelBuilder: () => HistorySectionViewModel());
   }
 }
