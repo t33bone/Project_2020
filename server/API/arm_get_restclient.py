@@ -1,6 +1,4 @@
 
-# Scans a folder for json or txt-files, POSTs them, and moves them to an archive folder
-# Other files, that are not intended for the DB, should not be kept at the designated folders
 # Works with RestApi.py, new address routes should be added there (server side)
 # Tables are in TestDataBase in mysql (configured by RestApi.py and databaseConnect.py)
 
@@ -32,6 +30,7 @@ while(True):
     with open(fullpath, "w") as json_file:
         json.dump(response, json_file)
         print("Get data received and saved to: ", saveget_directory)
+
 
     getData = requests.get(getUrl2)
     response = getData.json()
