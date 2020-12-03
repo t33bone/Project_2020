@@ -18,7 +18,8 @@ archive = "D:\\OneDrive - Oulun ammattikorkeakoulu\\S2020_Projekti\\jsonarchive\
 local = False
 
 if local == False:
-    postUrl = 'http://195.148.21.106/api/devices/post/location'
+    postUrl = 'http://195.148.21.106/api/ruuvilimit/post/ruuvilimits'
+    #postUrl = 'http://195.148.21.106/api/devices/post/location'
     postUrl2 = 'http://195.148.21.106/api/devices/post/status'
 else:
     postUrl = 'http://127.0.0.1:5000/api/devices/post/location'
@@ -38,7 +39,7 @@ def post():
             print("Error", x)
             print("The post was unsuccessful. Trying again in 10 sec.\n")
             c_flag = False
-            time.sleep(10)
+            time.sleep(5)
 
     if c_flag == True:
         # move a file to an archive folder
@@ -78,6 +79,8 @@ while(True):
                 post()
             
             else:
+                print("Incompatible file")
+                time.sleep(5)
                 break
 
     time.sleep(2)        

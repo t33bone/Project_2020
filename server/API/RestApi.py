@@ -79,14 +79,26 @@ def postStatus():
 ##################################################
 ############## Android app start #################
 
-# Post update to set message to 0 (inactive)
+# Messages
+# Get messages where active is set to 1 (which is a default value upon creating a new Message)
+@app.route('/api/devices/get/activemessages', methods=['GET'])  
+def getActiveMessages():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''SELECT Message.idMessage, Message.Messagetype, Message.Explanation, Message.Timestamp, Devices.Devicename
+    FROM Devices INNER JOIN Message ON Devices.idDevice = Message.Devices_idDevice WHERE Message.Active = "1"'''
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+# Post update to set message to 0 (inactive) by message id
 @app.route('/api/message/post/messageinactive', methods=['POST'])
 def postInactive():
     print (request.is_json)
     content = request.get_json()
     print(content)
     query = '''UPDATE Message SET Active = "0" 
-               WHERE idMessage = {}'''.format(content['idMessage']) # TODO: check if this works. Update instead of Insert
+               WHERE idMessage = {}'''.format(content['idMessage']) 
     db.sqlInsert(query)
     return "Post successful"
 
@@ -101,30 +113,8 @@ def getRuuvitagID():
     data = db.sqlQuery(query)
     return jsonify(data)
 
-####################################################################################################################################
-
-# Get messages where active is set to 1 (which is a default value upon creating a new Message)
-@app.route('/api/devices/get/activemessages', methods=['GET'])  # TODO: this join table works but other similar routes don't
-def getActiveMessages():
-    print (request.is_json)
-    content = request.get_json()
-    print(content)
-    query = '''SELECT Message.idMessage, Message.Messagetype, Message.Explanation, Message.Timestamp, Devices.Devicename
-    FROM Devices INNER JOIN Message ON Devices.idDevice = Message.Devices_idDevice WHERE Message.Active = "1"'''
-    data = db.sqlQuery(query)
-    return jsonify(data)
-
-@app.route('/api/devices/get/<deviceid>', methods=['GET'])  # TODO: works but the next ones don't
-def getTest(deviceid):
-    print (request.is_json)
-    content = request.get_json()
-    print(content)
-    query = '''SELECT DISTINCT idDevice FROM Devices WHERE idDevice = "{}"'''.format(deviceid)
-    data = db.sqlQuery(query)
-    return jsonify(data)
-
 # Get latest details of ruuvitag by id
-@app.route('/api/doordetail/get/<deviceid>', methods=['GET']) # TODO: doesn't work for some reason, query works with mysql workbench
+@app.route('/api/doordetail/get/<deviceid>', methods=['GET'])
 def getRuuvitagLatest(deviceid):                                  
     print (request.is_json)                                          
     content = request.get_json()
@@ -136,12 +126,12 @@ def getRuuvitagLatest(deviceid):
     LEFT JOIN Measurements ON Devices.idDevice = Measurements.Devices_idDevice
     LEFT JOIN Battery ON Devices.idDevice = Battery.Devices_idDevice 
     LEFT JOIN Location ON Devices.idDevice = Location.Devices_idDevice 
-    WHERE Devices.idDevice = "{}" ORDER BY Measurements.Timestamp DESC'''.format(deviceid)
+    WHERE Devices.idDevice = {} ORDER BY Measurements.Timestamp DESC'''.format(deviceid)
     data = db.sqlQuery(query)
     return jsonify(data)
 
 # Get limits of ruuvitag by id
-@app.route('/api/ruuvilimit/get/<deviceid>', methods=['GET']) # TODO: doesn't work, fails to build json with decimals/floats?
+@app.route('/api/ruuvilimit/get/<deviceid>', methods=['GET']) 
 def getRuuvitagLimits(deviceid):
     print (request.is_json)
     content = request.get_json()
@@ -152,10 +142,8 @@ def getRuuvitagLimits(deviceid):
     data = db.sqlQuery(query)
     return jsonify(data)
 
-####################################################################################################################################
-
 # Post ruuvitag measure limits
-@app.route('/api/message/post/messageinactive', methods=['POST'])
+@app.route('/api/ruuvilimit/post/ruuvilimits', methods=['POST'])
 def postRuuvitagLimits():
     print (request.is_json)
     content = request.get_json()
@@ -166,7 +154,7 @@ def postRuuvitagLimits():
                     content['Humidity'],
                     content['AirPressure'],
                     content['Batterylimit'],
-                    content['Devices_idDevice']) # TODO: check if this works. Update instead of Insert
+                    content['Devices_idDevice']) 
     db.sqlInsert(query)
     return "Post successful"
 
