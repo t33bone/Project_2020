@@ -170,14 +170,14 @@ def getCarIDs():
     return jsonify(data)
 
 # Get latest details of gopigo by ID
-@app.route('/api/devices/get/<variable>', methods=['GET'])
-def getGopigoDetails(variable):
+@app.route('/api/gopigoid/get/<deviceid>', methods=['GET'])
+def getGopigoDetails(deviceid):
     print (request.is_json)
     content = request.get_json()
     print(content)
     query = '''SELECT Devices.DeviceName, Battery.BatteryStatus, Location.Segment, Devices.Connected FROM Devices 
                 LEFT JOIN Battery ON Devices.idDevice = Battery.Devices_idDevice LEFT JOIN Location ON Devices.idDevice = Location.Devices_idDevice
-                WHERE idDevice = "{}" ORDER BY GREATEST(Battery.Timestamp, Location.Timestamp) LIMIT 1'''.format(variable)
+                WHERE idDevice = "{}" ORDER BY GREATEST(Battery.Timestamp, Location.Timestamp) LIMIT 1'''.format(deviceid)
     data = db.sqlQuery(query)
     return jsonify(data)
 
@@ -194,14 +194,14 @@ def getStationStatus():
     return jsonify(data)
 
 # Get history of 10 older than timestamp
-@app.route('/api/devices/get/<variable>', methods=['GET'])
-def getStationHistory(variable):
+@app.route('/api/charge/get/<timest>', methods=['GET'])
+def getStationHistory(timest):
     print (request.is_json)
     content = request.get_json()
     print(content)
     query = '''SELECT Devices.DeviceName, Charger_Status.Timestamp
                 FROM Devices INNER JOIN Charger_Status ON Devices.idDevice = Charger_Status.Devices_idDevice 
-                WHERE Charger_Status.Timestamp < "{}" LIMIT 10;'''.format(variable)
+                WHERE Charger_Status.Timestamp < "{}" LIMIT 10;'''.format(timest)
     data = db.sqlQuery(query)   # 2020-12-01 12:12:12 (yyyy-mm-dd hh:mm:ss) timestamp format as input
     return jsonify(data)
 
