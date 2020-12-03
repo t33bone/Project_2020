@@ -16,13 +16,15 @@ file_name = "newest_data"
 local = False
 
 if local == False:
-    getUrl = 'http://195.148.21.106/api/doori/get/all'
+    getUrl = 'http://195.148.21.106/api/door/get/'
 else:
     getUrl = 'http://127.0.0.1:5000/api/doori/get/all'
 
+byID = "4"
+
 while(True):
    # Gets json data from url specified above
-    getData = requests.get(getUrl)
+    getData = requests.get(getUrl + byID)
     # converts the data to json
     response = getData.json()
     

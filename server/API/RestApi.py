@@ -79,18 +79,6 @@ def postStatus():
 ##################################################
 ############## Android app start #################
 
-# Messages
-# Get messages where active is set to 1 (which is a default value upon creating a new Message)
-@app.route('/api/devices/get/activemessages', methods=['GET'])
-def getActiveMessages():
-    print (request.is_json)
-    content = request.get_json()
-    print(content)
-    query = '''SELECT Message.idMessage, Message.Messagetype, Message.Explanation, Message.Timestamp, Devices.Devicename
-    FROM Devices INNER JOIN Message ON Devices.idDevice = Message.Devices_idDevice WHERE Message.Active = "1"'''
-    data = db.sqlQuery(query)
-    return jsonify(data)
-
 # Post update to set message to 0 (inactive)
 @app.route('/api/message/post/messageinactive', methods=['POST'])
 def postInactive():
@@ -113,34 +101,58 @@ def getRuuvitagID():
     data = db.sqlQuery(query)
     return jsonify(data)
 
-# Get latest details of ruuvitag by id
-@app.route('/api/door/get/<variable>', methods=['GET']) # TODO: find a way to GET by device ID as this might not work
-def getRuuvitagLatest(variable):                        # -> Get with a variable
+####################################################################################################################################
+
+# Get messages where active is set to 1 (which is a default value upon creating a new Message)
+@app.route('/api/devices/get/activemessages', methods=['GET'])  # TODO: this join table works but other similar routes don't
+def getActiveMessages():
     print (request.is_json)
     content = request.get_json()
     print(content)
+    query = '''SELECT Message.idMessage, Message.Messagetype, Message.Explanation, Message.Timestamp, Devices.Devicename
+    FROM Devices INNER JOIN Message ON Devices.idDevice = Message.Devices_idDevice WHERE Message.Active = "1"'''
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+@app.route('/api/devices/get/<deviceid>', methods=['GET'])  # TODO: works but the next ones don't
+def getTest(deviceid):
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''SELECT DISTINCT idDevice FROM Devices WHERE idDevice = "{}"'''.format(deviceid)
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+# Get latest details of ruuvitag by id
+@app.route('/api/doordetail/get/<deviceid>', methods=['GET']) # TODO: doesn't work for some reason, query works with mysql workbench
+def getRuuvitagLatest(deviceid):                                  
+    print (request.is_json)                                          
+    content = request.get_json()
+    print(content)
     query = '''SELECT Battery.BatteryStatus, Devices.DeviceName, Location.Segment, Door_status.OpenOrNot, 
-                Measurements.Temperature, Measurements.Humidity, Measurements.AirPressure, Devices.Connected
-                FROM Door LEFT JOIN Devices ON Door.Devices_idDevice = Devices.idDevice 
-                LEFT JOIN Door_status ON Door.idDoor = Door_status.Door_idDoor
-                LEFT JOIN Measurements ON Devices.idDevice = Measurements.Devices_idDevice
-                LEFT JOIN Battery ON Devices.idDevice = Battery.Devices_idDevice 
-                LEFT JOIN Location ON Devices.idDevice = Location.Devices_idDevice 
-                WHERE Devices.idDevice = "{}" ORDER BY Measurements.Timestamp DESC'''.format(variable)
+    Measurements.Temperature, Measurements.Humidity, Measurements.AirPressure, Devices.Connected
+    FROM Door LEFT JOIN Devices ON Door.Devices_idDevice = Devices.idDevice 
+    LEFT JOIN Door_status ON Door.idDoor = Door_status.Door_idDoor
+    LEFT JOIN Measurements ON Devices.idDevice = Measurements.Devices_idDevice
+    LEFT JOIN Battery ON Devices.idDevice = Battery.Devices_idDevice 
+    LEFT JOIN Location ON Devices.idDevice = Location.Devices_idDevice 
+    WHERE Devices.idDevice = "{}" ORDER BY Measurements.Timestamp DESC'''.format(deviceid)
     data = db.sqlQuery(query)
     return jsonify(data)
 
 # Get limits of ruuvitag by id
-@app.route('/api/devices/get/<variable>', methods=['GET'])
-def getRuuvitagLimits(variable):
+@app.route('/api/ruuvilimit/get/<deviceid>', methods=['GET']) # TODO: doesn't work, fails to build json with decimals/floats?
+def getRuuvitagLimits(deviceid):
     print (request.is_json)
     content = request.get_json()
     print(content)
     query = '''SELECT Measurements_Limits.Temperature, Measurements_Limits.Humidity, Measurements_Limits.AirPressure, 
-                Measurements_Limits.Batterylimit FROM Devices LEFT JOIN Measurements_Limits 
-                ON Measurements_Limits.Devices_idDevice = Devices.idDevice WHERE Devices.idDevice = "{}"'''.format(variable)
+    Measurements_Limits.Batterylimit FROM Devices LEFT JOIN Measurements_Limits 
+    ON Measurements_Limits.Devices_idDevice = Devices.idDevice WHERE Devices.idDevice = "{}"'''.format(deviceid)
     data = db.sqlQuery(query)
     return jsonify(data)
+
+####################################################################################################################################
 
 # Post ruuvitag measure limits
 @app.route('/api/message/post/messageinactive', methods=['POST'])
