@@ -205,7 +205,10 @@ def getStationHistory(timest):
     data = db.sqlQuery(query)   # 2020-12-01 12:12:12 (yyyy-mm-dd hh:mm:ss) timestamp format as input
     return jsonify(data)
 
-#
+#ruuvitag metodit:
+#ruuvitag: lämpötila, ilmanpaine, kosteus, battery, laiteID/nimi, tyyppi
+#ruuvitagDoor: Oven tilan muutos, oven id/ruuvitag id
+
 # End
 
 @app.errorhandler(404)

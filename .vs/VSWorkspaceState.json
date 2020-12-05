@@ -1,13 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\doc",
-    "\\drone",
-    "\\flutter_app",
-    "\\gopigo",
     "\\server",
     "\\server\\API"
   ],
-  "SelectedNode": "\\server\\API\\API.sln",
+  "SelectedNode": "\\server\\API\\imageFileHandler.py",
   "PreviewInSolutionExplorer": false
 }
