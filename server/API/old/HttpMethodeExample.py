@@ -1,5 +1,5 @@
 import requests
-from flask import json
+import json
 
 # Don't change these urls, they are example http method urls and they can be changed on the server side
 # also more can be made for more specific use cases

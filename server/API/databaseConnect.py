@@ -8,7 +8,7 @@ from os.path import expanduser
 home = expanduser('~')
 
 LINUX = True
-if LINUX == True:
+if LINUX == False:
     with open("/var/www/RestApi/API/login_info.txt", "r") as f:
         login_info = [line.strip() for line in f]
     mypkey = paramiko.RSAKey.from_private_key_file("/var/www/RestApi/API/openssh_key", login_info[9])
