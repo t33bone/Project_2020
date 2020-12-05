@@ -126,7 +126,7 @@ def getRuuvitagLatest(deviceid):
     LEFT JOIN Measurements ON Devices.idDevice = Measurements.Devices_idDevice
     LEFT JOIN Battery ON Devices.idDevice = Battery.Devices_idDevice 
     LEFT JOIN Location ON Devices.idDevice = Location.Devices_idDevice 
-    WHERE Devices.idDevice = {} ORDER BY Measurements.Timestamp DESC'''.format(deviceid)
+    WHERE Devices.idDevice = {} ORDER BY GREATEST(Measurements.Timestamp, Door_status.Timestamp) DESC'''.format(deviceid)
     data = db.sqlQuery(query)
     return jsonify(data)
 
@@ -181,6 +181,18 @@ def getGopigoDetails(deviceid):
     data = db.sqlQuery(query)
     return jsonify(data)
 
+# Post a new name for a device by id
+@app.route('/api/devices/post/newdevicename', methods=['POST'])
+def postNewDeviceName():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''UPDATE Devices SET DeviceName = "{}" 
+               WHERE idDevice = "{}"'''.format(content['DeviceName'],
+                    content['idDevice']) 
+    db.sqlInsert(query)
+    return "Post successful"
+
 # Charging station
 # Get current status
 @app.route('/api/devices/get/stationstatus', methods=['GET'])
@@ -204,6 +216,51 @@ def getStationHistory(timest):
                 WHERE Charger_Status.Timestamp < "{}" LIMIT 10;'''.format(timest)
     data = db.sqlQuery(query)   # 2020-12-01 12:12:12 (yyyy-mm-dd hh:mm:ss) timestamp format as input
     return jsonify(data)
+
+##################################################
+############## Ruuvitag start #################
+
+# Post message 
+@app.route('/api/ruuvi/post/message', methods=['POST'])
+def postRuuvitagMessage():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Message (Messagetype, Explanation, Devices_idDevice) 
+                VALUES ("{}", "{}", "{}")'''.format(
+                    content['Messagetype'],
+                    content['Explanation'],
+                    content['Devices_idDevice']) 
+    db.sqlInsert(query)
+    return "Post successful"
+
+# Post door status
+@app.route('/api/ruuvi/post/doorstatus', methods=['POST'])
+def postRuuvitagDoor():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Door_status (OpenOrNot, Door_idDoor) 
+                VALUES ("{}", "{}")'''.format(
+                    content['OpenOrNot'],
+                    content['Door_idDoor']) 
+    db.sqlInsert(query)
+    return "Post successful"
+
+# Post ruuvitag measurements
+@app.route('/api/ruuvi/post/details', methods=['POST'])
+def postRuuvitagDetails():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Measurements (Devices_idDevice, Temperature, Humidity, AirPressure) 
+                VALUES ("{}", "{}", "{}", "{}")'''.format(
+                    content['Devices_idDevice'],
+                    content['Temperature'],
+                    content['Humidity'],
+                    content['AirPressure']) 
+    db.sqlInsert(query)
+    return "Post successful"
 
 #
 # End

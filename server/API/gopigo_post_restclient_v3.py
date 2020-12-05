@@ -18,7 +18,7 @@ archive = "D:\\OneDrive - Oulun ammattikorkeakoulu\\S2020_Projekti\\jsonarchive\
 local = False
 
 if local == False:
-    postUrl = 'http://195.148.21.106/api/ruuvilimit/post/ruuvilimits'
+    postUrl = 'http://195.148.21.106/api/devices/post/newdevicename'
     #postUrl = 'http://195.148.21.106/api/devices/post/location'
     postUrl2 = 'http://195.148.21.106/api/devices/post/status'
 else:
