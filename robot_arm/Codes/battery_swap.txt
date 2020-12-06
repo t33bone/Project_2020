@@ -2,6 +2,7 @@
    Robot Program
      sct_connect≔socket_open("169.254.100.220", 29998)
      MoveL
+       bot_approach
        snap_pos
      Loop
        sct_read≔socket_read_ascii_float(2)
@@ -37,11 +38,10 @@
                  Gripper Close (1)
                  grp_closed≔1
                  appr
+                 bot_approach
              If no object found
                'Optional'
            If grp_closed≟1
-             MoveJ
-               snap_pos2
              Cam Locate
                For object(s) found
                  Cam Locate
@@ -62,6 +62,10 @@
                    n_btr_app
                If no object found
                  'Optional'
+             MoveL
+               safety
+               bot_approach
+               snap_pos
              Cam Locate
                For object(s) found
                  MoveL
