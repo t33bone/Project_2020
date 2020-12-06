@@ -4,10 +4,10 @@ from datetime import datetime
 from ruuvitag_sensor.ruuvi import RuuviTagSensor
 
 # Change here your own device's mac-address
-#mac = 'C1:05:25:89:4A:F0'
+mac = 'C1:05:25:89:4A:F0'
 #mac = 'DD:39:47:16:BA:F5'
 #mac = 'EF:12:4E:E0:FC:95'
-macs = ['C1:05:25:89:4A:F0', 'DD:39:47:16:BA:F5', 'EF:12:4E:E0:FC:95']
+#macs = ['C1:05:25:89:4A:F0', 'DD:39:47:16:BA:F5', 'EF:12:4E:E0:FC:95']
 mov_check = 0
 door_moved = 0
 mov = 0
@@ -41,6 +41,7 @@ def print_data(received_data):
     line_hum = str.format('Humidity:    {0}', data['humidity'])
     line_pre = str.format('Pressure:    {0}', data['pressure'])
     line_doo = str.format('IsDoorMoved: {0}', door_moved)
+    line_check = str.format('MovementCounter: {0}', data['movement_counter'])
 
     # Clear screen and print sensor data
     os.system('clear')
@@ -56,5 +57,5 @@ def print_data(received_data):
     print('\n\r\n\r.......')
 
 
-#RuuviTagSensor.get_datas(print_data, mac)
-RuuviTagSensor.get_datas(print_data, macs)
+RuuviTagSensor.get_datas(print_data, mac)
+#RuuviTagSensor.get_datas(print_data, macs)
