@@ -17,7 +17,7 @@ class DriftersPage extends StatelessWidget {
             children: [
               MapSection(),
               StatusSection(),
-              GoHomeSection(),
+              // GoHomeSection(), //not used
             ],
           ),
         );
@@ -102,7 +102,6 @@ class StatusSection extends StatelessWidget {
         return Card(
           clipBehavior: Clip.antiAlias,
           child: SizedBox(
-            //height: 255, //TODO could be problem to have fixed size
             child: Container(
               padding: const EdgeInsets.all(8),
               child: Column(
@@ -130,7 +129,7 @@ class StatusSection extends StatelessWidget {
 }
 
 Widget _gopigoListTileAnimated(context, device, model) {
-  print('[${device.name}] section built in _gopigoListTileAnimated');
+  print('[${device.getName}] section built in _gopigoListTileAnimated');
 
   return OpenContainer(
     transitionType: ContainerTransitionType.fade,
@@ -143,7 +142,7 @@ Widget _gopigoListTileAnimated(context, device, model) {
           Icons.commute, //temp icon
         ),
         title: Text(
-          device.name,
+          device.getName,
           style: Theme.of(context).textTheme.bodyText1,
         ),
         trailing: Container(
@@ -177,10 +176,10 @@ Widget _gopigoListTileAnimated(context, device, model) {
         builder: (context, model, child) {
           if (device.id != model.id) model.setdevice(device); //TODO
           print(
-              'GoPiGoSettingsViewModel for [${device.name}]/[${model.name}] built');
+              'GoPiGoSettingsViewModel for [${device.getName}]/[${model.name}] built');
           return Scaffold(
             appBar: AppBar(
-              title: Text('${device.name} - Settings'),
+              title: Text('${device.getName} - Settings'),
               actions: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.done),

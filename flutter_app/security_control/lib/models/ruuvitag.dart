@@ -11,8 +11,6 @@ class RuuviTag {
 
   bool _connected = true; //TODO delete? no use/info from database
 
-  //simple tester constructor
-  // RuuviTag(this._id, this.this.thisName, this._batterylevel);
   //getters
   String get getName => name;
   int get getId => id;
@@ -37,15 +35,16 @@ class RuuviTag {
     this.humidity,
     this.pressure,
   });
+
   //TODO match up json field thisNames to what database gives out
   factory RuuviTag.fromJson(Map<String, dynamic> json) {
     return RuuviTag(
       id: json['id'] as int,
       name: json['DeviceName'] as String,
       batterylevel: json['title'] as double,
-      temperature: json['url'] as double,
-      humidity: json['thumbnailUrl'] as double,
-      pressure: json['title'] as double,
+      temperature: json['temperature'] as double,
+      humidity: json['humidity'] as double,
+      pressure: json['pressure'] as double,
     );
   }
 

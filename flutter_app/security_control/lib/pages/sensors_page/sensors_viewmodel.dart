@@ -1,5 +1,4 @@
 import 'package:stacked/stacked.dart';
-import 'package:flutter/material.dart';
 import 'package:security_control/models/ruuvitag.dart';
 
 class SensorsViewModel extends BaseViewModel {
@@ -21,8 +20,7 @@ class StatusSectionViewModel extends BaseViewModel {
 }
 
 class RuuviTagSettingsViewModel extends BaseViewModel {
-  RuuviTag _tempDevice =
-      new RuuviTag(id: 6666, name: 'device_kk', batterylevel: 5);
+  RuuviTag _tempDevice = new RuuviTag();
   RuuviTag _device;
   get name => _tempDevice.name;
   get batterylevel => _tempDevice.batterylevel;
@@ -41,7 +39,6 @@ class RuuviTagSettingsViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  //TODO there is a better way to do this?
   void setdevice(RuuviTag device) {
     _tempDevice.setName(device.name);
     _tempDevice.setId(device.id);
@@ -50,7 +47,6 @@ class RuuviTagSettingsViewModel extends BaseViewModel {
     print('setdevice ${device.name}');
   }
 
-  //TODO there is a better way to do this?
   void updateSettings() {
     print('GoPiGoSettingsViewModel/updateSettings');
     _device.setBatteryLevel(_tempDevice.batterylevel);
