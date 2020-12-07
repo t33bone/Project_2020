@@ -9,6 +9,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import 'pages/batterystation_page/batterystation.dart';
 import 'pages/drifters_page/drifters.dart';
 import 'pages/drone_page/drone.dart';
 import 'pages/gallery_page/gallery.dart';
@@ -31,6 +32,7 @@ class Routes {
   static const String settingsPage = '/settings-page';
   static const String serverSettingsPage = '/server-settings-page';
   static const String notificationSettingsPage = '/notification-settings-page';
+  static const String batteryStationPage = '/battery-station-page';
   static const all = <String>{
     loginPage,
     driftersPage,
@@ -42,6 +44,7 @@ class Routes {
     settingsPage,
     serverSettingsPage,
     notificationSettingsPage,
+    batteryStationPage,
   };
 }
 
@@ -59,6 +62,7 @@ class Router extends RouterBase {
     RouteDef(Routes.settingsPage, page: SettingsPage),
     RouteDef(Routes.serverSettingsPage, page: ServerSettingsPage),
     RouteDef(Routes.notificationSettingsPage, page: NotificationSettingsPage),
+    RouteDef(Routes.batteryStationPage, page: BatteryStationPage),
   ];
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
@@ -120,6 +124,12 @@ class Router extends RouterBase {
     NotificationSettingsPage: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => NotificationSettingsPage(),
+        settings: data,
+      );
+    },
+    BatteryStationPage: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => BatteryStationPage(),
         settings: data,
       );
     },

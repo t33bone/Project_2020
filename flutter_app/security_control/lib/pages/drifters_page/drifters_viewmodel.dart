@@ -1,7 +1,12 @@
+import 'package:security_control/services/gopigo_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:security_control/models/gopigo.dart';
+import 'package:security_control/services/service_locator.dart';
 
-class DriftersViewModel extends BaseViewModel {
+class DriftersViewModel extends FutureViewModel<List<GoPiGo>> {
+  final _gopigoService = locator<GoPiGoService>();
+  @override
+  Future<List<GoPiGo>> futureToRun() => _gopigoService.getGoPiGoInfo();
   String _title = "DriftersPage<temp>"; //TODO FINAL: replace temp title
   String get title => _title;
 }
@@ -15,58 +20,24 @@ class MapSectionViewModel extends BaseViewModel {
   double get height => _boxHeight;
 }
 
-class StatusSectionViewModel extends BaseViewModel {
+class StatusSectionViewModel extends DriftersViewModel {
   String _statusSectionTitle = "'GoPiGo Section Here";
   String get statusSectionTitle => _statusSectionTitle;
-  //TODO generate gopigolist from server
-  final _gopigolist = <GoPiGo>[
-    GoPiGo(
-      1,
-      'test car1',
-      23,
-    ),
-    GoPiGo(
-      2,
-      'BoB',
-      46,
-    ),
-    GoPiGo(
-      3,
-      'gopigo5',
-      100,
-    )
-  ];
-  List<GoPiGo> get gopigolist => _gopigolist;
-  double _animationHeight = 48.0;
-  get animationHeight => _animationHeight;
+  List<GoPiGo> get gopigolist => _gopigoService.devices;
 
-  get duration => _duration;
   void updateDrifterBatterySetting(GoPiGo device, int newValue) {
     device.setBatteryLevel(newValue);
-    notifyListeners();
-  }
-
-  Duration _duration = Duration(milliseconds: 100);
-  void dosomething() {
-    print('do something tap');
-    _animationHeight = _animationHeight == 48 ? 200 : 48;
-    notifyListeners();
-  }
-
-  void updateSettings() {
-    print('update settings');
-    //TODO save device settings
     notifyListeners();
   }
 }
 
 class GoPiGoSettingsViewModel extends BaseViewModel {
-  GoPiGo _tempDevice = new GoPiGo(6666, 'device_kk', 5);
+  GoPiGo _tempDevice = new GoPiGo();
   GoPiGo _device;
-  get name => _tempDevice.name;
-  get batterylevel => _tempDevice.batterylevel;
+  get name => _tempDevice.getName;
+  get batterylevel => _tempDevice.getBatterylevel;
 
-  get id => _tempDevice.id;
+  get id => _tempDevice.getId;
 
   Object get device => _tempDevice;
 
@@ -80,20 +51,18 @@ class GoPiGoSettingsViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  //TODO there is a better way to do this?
   void setdevice(GoPiGo device) {
-    _tempDevice.setName(device.name);
-    _tempDevice.setId(device.id);
-    _tempDevice.setBatteryLevel(device.batterylevel);
+    _tempDevice.setName(device.getName);
+    _tempDevice.setId(device.getId);
+    _tempDevice.setBatteryLevel(device.getBatterylevel);
     _device = device;
-    print('setdevice ${device.name}');
+    print('setdevice ${device.getName}');
   }
 
-  //TODO there is a better way to do this?
   void updateSettings() {
     print('GoPiGoSettingsViewModel/updateSettings');
-    _device.setBatteryLevel(_tempDevice.batterylevel);
-    _device.setName(_tempDevice.name);
+    _device.setBatteryLevel(_tempDevice.getBatterylevel);
+    _device.setName(_tempDevice.getName);
   }
 }
 
