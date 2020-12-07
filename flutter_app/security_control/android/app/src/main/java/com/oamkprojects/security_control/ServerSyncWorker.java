@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.webkit.HttpAuthHandler;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 //import com.google.common.util.concurrent.Listenable
@@ -14,6 +16,7 @@ import java.util.Random;
 import io.flutter.Log;
 
 public class ServerSyncWorker extends Worker {
+    private static final String CHANNEL_ID = "securitycontrolintruderalerts";
     private final String DEBUG_TAG = this.getClass().getSimpleName();
 
     private String updateIntervalKey = "flutter.updateinterval";
@@ -28,6 +31,8 @@ public class ServerSyncWorker extends Worker {
     @Override
     public Result doWork(){
         Context applicationContext = getApplicationContext();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(applicationContext);
+
         SharedPreferences prefs  = applicationContext.getSharedPreferences("FlutterSharedPreferences",
                 Context.MODE_PRIVATE);
 
@@ -39,10 +44,17 @@ public class ServerSyncWorker extends Worker {
 
         if(serverAddress.equals("")){
             // Send notification?
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("Could not sync with server")
+                    .setContentText("Tap to open server settings")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH);
+            notificationManager.notify(123, mBuilder.build());
+            return Result.retry();
         }
         else{
             // Sync.
-            battery = random.nextInt();
+            battery = random.nextInt(100);
             String string =
                     "{" +
                             "\"id\": \"unique\"," +
@@ -52,9 +64,21 @@ public class ServerSyncWorker extends Worker {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString(gopigokey,string);
             editor.apply();
+//            editor.putInt(updateIntervalKey, battery);
+//            editor.apply();
             Log.d(DEBUG_TAG,"Put something in gopigo pref." + prefs.getString(gopigokey, "empty"));
+            Log.d(DEBUG_TAG, "Changed update interval" + Integer.toString(prefs.getInt(updateIntervalKey, 0)));
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("We just did something")
+                    .setContentText("Tap to do something more")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+
+
+            notificationManager.notify(1234, mBuilder.build());
+            return Result.success();
         }
 
-        return Result.success();
     }
 }

@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:security_control/services/navigation_service.dart';
 import 'package:security_control/services/picture_service.dart';
 import 'package:security_control/services/local_storage_service.dart';
 import 'package:security_control/services/gopigo_service.dart';
-import 'package:security_control/services/api.dart';
+import 'package:security_control/services/server_sync_service.dart';
 
 /*
   "Using get_it, class types can be registered in two ways.
@@ -25,9 +26,10 @@ Future setupLocator() async {
   locator.registerLazySingleton(() => NavigationService());
   locator.registerLazySingleton(() => PictureService());
   locator.registerLazySingleton(() => GoPiGoService());
-  locator.registerLazySingleton(() => Api());
 
   var instance = await LocalStorageService.getInstance();
   locator.registerSingleton<LocalStorageService>(instance);
   //locator.registerLazySingleton(() => LocalStorageService());
+  var syncInstance = ServerSyncService();
+  locator.registerSingleton<ServerSyncService>(syncInstance);
 }

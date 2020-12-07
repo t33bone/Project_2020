@@ -9,6 +9,7 @@ class ServerSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<SubSettingsViewModel>.reactive(
         onModelReady: (model) => model.initialise(),
+        disposeViewModel: false,
         viewModelBuilder: () => SubSettingsViewModel(),
         builder: (context, model, child) =>
             Scaffold(
@@ -35,11 +36,13 @@ class ServerSettingsPage extends StatelessWidget {
                         // )
                         Row(
                           children: [
-                            //Text(model.goPiGo.id),
-                            Text(model.goPiGo.battery.toString()),
-                            Text(model.goPiGo.location.toString())
+                            Text(model.serverString, style: Theme.of(context).textTheme.headline2),
+                            // Text(model.goPiGo.battery.toString()),
+                            // Text(model.goPiGo.location.toString())
                           ],
-                        )
+                        ),
+                        FlatButton(onPressed: model.stopSync, child: Text("STOP SYNC")),
+                        FlatButton(onPressed: model.startSync, child: Text("START SYNC"))
                       ],
                     )
                 )

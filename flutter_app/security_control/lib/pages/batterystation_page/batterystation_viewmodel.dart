@@ -16,7 +16,7 @@ class BatterystationViewModel extends FutureViewModel<List<GoPiGo>> {
 }
 
 class StatusSectionViewModel extends BatterystationViewModel {
-  GoPiGo _temp = new GoPiGo(timestamp: DateTime.parse("-123450101 00:00:00"));
+  GoPiGo _temp = new GoPiGo.empty();
   String _statusSectionTitle = "Latest Battery Change";
   String get statusSectionTitle => _statusSectionTitle;
 
@@ -51,18 +51,18 @@ class HistorySectionViewModel extends BatterystationViewModel {
       var newFetchedItems = List<GoPiGo>.generate(
           10,
           (index) => GoPiGo(
-              id: 1,
-              name: 'test cars$index',
-              batterylevel: 27,
-              timestamp: pageToRequest.subtract(Duration(minutes: index + 1))));
+              1,
+              'test cars$index',
+              27));
       _items.addAll(newFetchedItems);
       _removeLoadingIndicator();
     }
   }
 
   void _showLoadingIndicator() {
-    _items.add(GoPiGo(id: -5));
+    _items.add(GoPiGo(-5, "s", 1));
     notifyListeners();
+    GoPiGo(2, "name", 2);
   }
 
   void _removeLoadingIndicator() {
@@ -77,9 +77,8 @@ class HistorySectionViewModel extends BatterystationViewModel {
     _items = List<GoPiGo>.generate(
         5,
         (index) => GoPiGo(
-            id: 1,
-            name: 'test cars$index',
-            batterylevel: 27,
-            timestamp: DateTime.now().subtract(Duration(minutes: index))));
+            1,
+            'test cars$index',
+            27));
   }
 }

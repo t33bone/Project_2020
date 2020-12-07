@@ -47,6 +47,8 @@ dependencies:
   #For using shared preferences:
   streaming_shared_preferences: ^1.0.1
 
+  isolate_handler: ^0.3.1
+  flutter_isolate: ^1.0.0
 
 dev_dependencies:
   flutter_test:

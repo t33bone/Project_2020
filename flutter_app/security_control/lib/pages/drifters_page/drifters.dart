@@ -96,6 +96,7 @@ class StatusSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<StatusSectionViewModel>.reactive(
+      onModelReady: (model){model.initialise();},
       builder: (context, model, child) {
         print('StatusSectionViewModel built');
         return Card(
@@ -128,7 +129,7 @@ class StatusSection extends StatelessWidget {
 }
 
 Widget _gopigoListTileAnimated(context, device, model) {
-  print('[${device.getName}] section built in _gopigoListTileAnimated');
+  print('[${device .name}] section built in _gopigoListTileAnimated');
 
   return OpenContainer(
     transitionType: ContainerTransitionType.fade,
@@ -141,7 +142,7 @@ Widget _gopigoListTileAnimated(context, device, model) {
           Icons.commute, //temp icon
         ),
         title: Text(
-          device.getName,
+          device .name,
           style: Theme.of(context).textTheme.bodyText1,
         ),
         trailing: Container(
@@ -175,10 +176,10 @@ Widget _gopigoListTileAnimated(context, device, model) {
         builder: (context, model, child) {
           if (device.id != model.id) model.setdevice(device); //TODO
           print(
-              'GoPiGoSettingsViewModel for [${device.getName}]/[${model.name}] built');
+              'GoPiGoSettingsViewModel for [${device .name}]/[${model.name}] built');
           return Scaffold(
             appBar: AppBar(
-              title: Text('${device.getName} - Settings'),
+              title: Text('${device .name} - Settings'),
               actions: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.done),
