@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:security_control/models/gopigo.dart';
+import 'widgets/CreationAwareListItem.dart';
 import 'package:stacked/stacked.dart';
 import 'batterystation_viewmodel.dart';
 
@@ -13,12 +16,10 @@ class BatteryStationPage extends StatelessWidget {
           appBar: AppBar(
             title: Text(model.title),
           ),
-          body: ListView(
-            children: [
-              StatusSection(),
-              HistorySection(),
-            ],
-          ),
+          body: Column(children: [
+            StatusSection(),
+            Expanded(child: HistorySection()),
+          ]),
         );
       },
       viewModelBuilder: () => BatterystationViewModel(),
@@ -44,19 +45,28 @@ class StatusSection extends StatelessWidget {
                     model.statusSectionTitle,
                     style: Theme.of(context).textTheme.headline6,
                   ),
+                  Divider(),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Icon(Icons.commute),
-                      Text(model.recentDevice.getName,
-                          style: Theme.of(context).textTheme.bodyText1),
                       Container(
-                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.commute),
+                            Text(model.recentDevice.getName,
+                                style: Theme.of(context).textTheme.bodyText2),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 14.0),
                         alignment: Alignment.center,
                         child: Row(
                           children: [
-                            Icon(Icons.battery_std),
-                            Text('<TIMESTAMP> ',
+                            Icon(Icons.lock_clock),
+                            Text(
+                                timeFormat
+                                    .format(model.recentDevice.getTimestamp),
                                 style: Theme.of(context).textTheme.bodyText2),
                           ],
                         ),
@@ -80,43 +90,68 @@ class HistorySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<HistorySectionViewModel>.reactive(
         builder: (context, model, child) {
-          print('MapSection built');
+          print('HistorySection built');
           return Card(
             clipBehavior: Clip.antiAlias,
-            child: SizedBox(
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    Text(
-                      model.historySectionTitle,
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(Icons.commute),
-                        Text('model.recentDevice.getName',
-                            style: Theme.of(context).textTheme.bodyText1),
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 4.0),
-                          alignment: Alignment.center,
-                          child: Row(
-                            children: [
-                              Icon(Icons.battery_std),
-                              Text('<TIMESTAMP> ',
-                                  style: Theme.of(context).textTheme.bodyText2),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+            child: Column(
+              children: [
+                Text(
+                  model.historySectionTitle,
+                  style: Theme.of(context).textTheme.headline6,
+                  textAlign: TextAlign.center,
                 ),
-              ),
+                Divider(),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: model.items.length,
+                    itemBuilder: (context, index) => CreationAwareListItem(
+                      itemCreated: () {
+                        print('item created $index');
+                        SchedulerBinding.instance.addPostFrameCallback(
+                            (duration) =>
+                                model.handleHistoryItemCreated(index));
+                      },
+                      child: HistoryItem(
+                        device: model.items[index],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },
         viewModelBuilder: () => HistorySectionViewModel());
+  }
+}
+
+class HistoryItem extends StatelessWidget {
+  final GoPiGo device;
+  const HistoryItem({Key key, this.device}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        child: device.getId == -5
+            ? CircularProgressIndicator()
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(children: [
+                    Icon(Icons.car_rental),
+                    Text(device.getName),
+                  ]),
+                  Row(children: [
+                    Icon(Icons.timer),
+                    Text(timeFormat.format(device.getTimestamp)),
+                  ]),
+                ],
+              ),
+        alignment: Alignment.center,
+      ),
+    );
   }
 }

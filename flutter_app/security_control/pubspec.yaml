@@ -41,7 +41,7 @@ dependencies:
   injectable:
   auto_route: ^0.6.9
 
-
+  intl: ^0.16.1
   animations: ^1.1.2
 
   #For using shared preferences:

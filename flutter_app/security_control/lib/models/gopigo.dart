@@ -1,17 +1,15 @@
-//TODO: conform to servers model of GoPiGo
 class GoPiGo {
   int id;
   String name;
   int batterylevel;
   String location;
-  int timestamp; //TODO make a good time format
-
-  // GoPiGo(this.id, this.name, this.batterylevel);
+  DateTime timestamp;
 
   String get getName => name;
   int get getId => id;
   int get getBatterylevel => batterylevel;
   String get getLocation => location;
+  DateTime get getTimestamp => timestamp;
 
   void setId(int i) => id = i;
   void setBatteryLevel(int i) => batterylevel = i;
