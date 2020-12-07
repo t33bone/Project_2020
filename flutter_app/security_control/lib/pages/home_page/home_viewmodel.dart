@@ -95,7 +95,7 @@ class HomeViewModel extends ChangeNotifier {
   ];
 
   List<Devices> devicesList = <Devices>[
-    Devices(1, 'test car1', 23, true),
+    Devices(1, 'test car1', 24, true),
     Devices(2, 'BoB', 46, true),
     Devices(3, 'gopigo5', 100, false),
     Devices(4, 'Drone', 80, true),
@@ -106,9 +106,9 @@ class HomeViewModel extends ChangeNotifier {
     Devices(9, 'Auto7', 49, true),
   ];
 
-  showRequiredActions(BuildContext context) {
+  showRequiredActionsDialog(BuildContext context) {
     Widget clearButton = FlatButton(
-      child: Text("CLEAR"),
+      child: Text("CLEAR ALL"),
       onPressed: () {
         Navigator.of(context).pop();
         //clear actionsrequired
@@ -128,14 +128,16 @@ class HomeViewModel extends ChangeNotifier {
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width * 0.75,
-            height: MediaQuery.of(context).size.width * 0.25,
+            height: MediaQuery.of(context).size.height * 0.15,
             child: ListView.builder(
               itemCount: actionsRequired.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(actionsRequired[index]),
-                  //onTap: () =>
-                );
+                    title: Text(actionsRequired[index]),
+                    onTap: () {
+                      //POST MESSAGE CLEARED WITH ID
+                      clearMessageDialog(context);
+                    });
               },
             ),
           ),
@@ -148,8 +150,39 @@ class HomeViewModel extends ChangeNotifier {
     );
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return actions;
+      },
+    );
+  }
+
+  clearMessageDialog(BuildContext context) {
+    Widget noButton = FlatButton(
+      child: Text("NO"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget yesButton = FlatButton(
+      child: Text("YES"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        //clear message with id
+      },
+    );
+    AlertDialog clearMessage = AlertDialog(
+      content: Text('Are you sure you want to clear this message?'),
+      actions: [
+        noButton,
+        yesButton,
+      ],
+    );
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return clearMessage;
       },
     );
   }

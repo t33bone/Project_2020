@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:security_control/models/measurement_limits.dart';
 
 //TODO: conform to servers model of RuuviTag
 class RuuviTag {
@@ -8,6 +9,8 @@ class RuuviTag {
   double temperature;
   double humidity;
   double pressure;
+
+  MeasurementLimits measurementLimits;
 
   bool _connected = true; //TODO delete? no use/info from database
 
@@ -24,6 +27,9 @@ class RuuviTag {
   void setId(int i) => id = i;
   //TODO there is no batterylevel warning in DB?
   void setBatteryLevel(double i) => batterylevel = i;
+  void setTemperatureLimit(double k) => temperature = k;
+  void setHumidityLimit(double j) => humidity = j;
+  void setPressureLimit(double l) => pressure = l;
   void setName(String newthisName) {
     this.name = newthisName;
   }

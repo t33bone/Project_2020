@@ -98,18 +98,23 @@ Widget _ruuvitagListTileAnimated(context, device, model) {
             ),
             Row(
               children: [
-                Container(height: 48, child: Icon(CupertinoIcons.thermometer)),
-                Text(device.batterylevel.toString() + ' C'),
+                Container(height: 48, child: Icon(Icons.battery_std)),
+                Text(device.batterylevel.toString() + ' %'),
                 Container(
-                    margin: EdgeInsets.only(left: 18),
+                    height: 48,
+                    margin: EdgeInsets.only(left: 8),
+                    child: Icon(CupertinoIcons.thermometer)),
+                Text(device.temperature.toString() + ' C'),
+                Container(
+                    margin: EdgeInsets.only(left: 8),
                     height: 48,
                     child: Icon(CupertinoIcons.tornado)),
-                Text(device.batterylevel.toString() + ' m/s'),
+                Text(device.pressure.toString() + ' Pa'),
                 Container(
-                    margin: EdgeInsets.only(left: 18),
+                    margin: EdgeInsets.only(left: 8),
                     height: 48,
                     child: Icon(CupertinoIcons.gauge)),
-                Text(device.batterylevel.toString() + ' %'),
+                Text(device.humidity.toString() + ' %'),
               ],
             ),
           ],
@@ -132,7 +137,7 @@ Widget _ruuvitagListTileAnimated(context, device, model) {
                 IconButton(
                   icon: const Icon(Icons.done),
                   onPressed: () {
-                    //TODO process data
+                    //TODO post limits
 
                     model.updateSettings();
                     Navigator.pop(context, true);
@@ -156,8 +161,8 @@ Widget _ruuvitagListTileAnimated(context, device, model) {
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           decoration: InputDecoration(
-                            helperText: 'device.name',
-                            //labelText: 'Name',
+                            //helperText: 'device.name',
+                            labelText: 'Name',
                             border: OutlineInputBorder(),
                           ),
                           initialValue: model.name,
@@ -167,8 +172,8 @@ Widget _ruuvitagListTileAnimated(context, device, model) {
                           },
                         ),
                       ),
-                      Divider(),
-                      ListTile(
+/*                      Divider(),
+                       ListTile(
                         leading: Icon(Icons.message),
                         title: Text("setting 2"),
                         trailing: Checkbox(
@@ -177,39 +182,68 @@ Widget _ruuvitagListTileAnimated(context, device, model) {
                             value = !value;
                           },
                         ),
-                      ),
+                      ), */
                       Divider(),
                       ListTile(
-                        leading: Text('batterylevel warning'),
-                        title: Slider(
+                        isThreeLine: true,
+                        title: Text('Battery limit (%)'),
+                        subtitle: Slider(
                           value: model.batterylevel,
                           min: 0,
                           max: 100,
-                          divisions: 5,
+                          divisions: 20,
                           label: model.batterylevel.round().toString(),
                           onChanged: (double value) {
-                            model.sliderUpdate(value);
+                            model.sliderUpdate('battery', value);
                           },
                         ),
                       ),
                       Divider(),
                       ListTile(
-                        leading: Icon(Icons.message),
-                        title: Text("setting 2"),
-                        trailing: Checkbox(
-                          value: true,
-                          onChanged: (value) {},
+                        title: Text('Temperature limits (°C)'),
+/*                         subtitle: Slider(   //ONLY 1 LIMIT
+                          value: model.temperature,
+                          min: -100,
+                          max: 100,
+                          divisions: 200,
+                          label: model.temperature.round().toString(),
+                          onChanged: (double value) {
+                            model.sliderUpdate('temperature', value);
+                          },
+                        ), */
+                        subtitle: model.temperatureRangeSlider(context
+                            //UPPER AND LOWER LIMITS
+                            ),
+                      ),
+                      Divider(),
+                      ListTile(
+                        title: Text('Humidity limit (%)'),
+                        subtitle: Slider(
+                          value: model.humidity,
+                          min: 0,
+                          max: 100,
+                          divisions: 20,
+                          label: model.humidity.round().toString(),
+                          onChanged: (double value) {
+                            model.sliderUpdate('humidity', value);
+                          },
                         ),
                       ),
                       Divider(),
                       ListTile(
-                        leading: Icon(Icons.message),
-                        title: Text("setting 2"),
-                        trailing: Checkbox(
-                          value: true,
-                          onChanged: (value) {},
+                        title: Text('Airpressure limit (Pa)'),
+                        subtitle: Slider(
+                          value: model.pressure,
+                          min: 0,
+                          max: 200,
+                          divisions: 20,
+                          label: model.pressure.round().toString(),
+                          onChanged: (double value) {
+                            model.sliderUpdate('pressure', value);
+                          },
                         ),
                       ),
+                      Divider(),
                     ],
                   ),
                 ),

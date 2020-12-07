@@ -121,7 +121,7 @@ class HomePage extends StatelessWidget {
                               model.actionRequiredLabel)
                           : Text(model.noActionRequiredLabel),
                       onTap: () => model.intruderAlert == true
-                          ? model.showRequiredActions(context)
+                          ? model.showRequiredActionsDialog(context)
                           : null,
                     ),
                   ],
@@ -135,19 +135,16 @@ class HomePage extends StatelessWidget {
                       child: ListTile(
                         leading: Container(
                           //icon sizes adjusted to match material design
-                          width:
-                              58, //TODO FINAL these could be problematic with scales
+                          width: 58,
                           height: 48,
                           // width: MediaQuery.of(context).size.width * 0.15,
-                          // height: MediaQuery.of(context).size.width * 0.25,
+                          // height: MediaQuery.of(context).size.height * 0.70,
                           padding: EdgeInsets.symmetric(vertical: 4.0),
                           alignment: Alignment.center,
                           child: Row(
                             children: [
-                              //TODO make charge icons dynamic to the charge %
                               Icon(
                                 Icons.battery_std,
-                                //CupertinoIcons.battery_100,
                               ),
                               Text(
                                 model.devicesList[i].batterylevel.toString() +
@@ -174,6 +171,7 @@ class HomePage extends StatelessWidget {
                                     color: Theme.of(context).accentColor,
                                     fontWeight: FontWeight.bold),
                               ),
+                        //onTap: () {}, //on tap goto device page/ device settings?
                       ),
                     );
                   },
