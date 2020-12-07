@@ -9,11 +9,12 @@ import 'package:security_control/pages/sensors_page/sensors.dart';
 import 'package:security_control/pages/settings_page/settings.dart';
 import 'package:security_control/pages/settings_page/notification_settings.dart';
 import 'package:security_control/pages/settings_page/server_settings.dart';
+import 'package:security_control/pages/batterystation_page/batterystation.dart';
 
 // You can re-generate the routes (if adding more here) by using:
 //  $ flutter packages pub run build_runner build
 
-@MaterialAutoRouter(routes:[
+@MaterialAutoRouter(routes: [
   MaterialRoute(page: LoginPage, initial: true),
   MaterialRoute(page: DriftersPage, initial: false),
   MaterialRoute(page: DronePage, initial: false),
@@ -24,5 +25,6 @@ import 'package:security_control/pages/settings_page/server_settings.dart';
   MaterialRoute(page: SettingsPage, initial: false),
   MaterialRoute(page: ServerSettingsPage, initial: false),
   MaterialRoute(page: NotificationSettingsPage, initial: false),
+  MaterialRoute(page: BatteryStationPage, initial: false),
 ])
-class $Router{}
+class $Router {}

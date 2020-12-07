@@ -50,6 +50,8 @@ class HomeViewModel extends ChangeNotifier {
     const MyDrawerItems('Pictures', Icon(Icons.photo)),
     const MyDrawerItems('Settings', Icon(Icons.settings)),
     const MyDrawerItems('Logout', Icon(Icons.logout)),
+    const MyDrawerItems(
+        'Charge Station', Icon(Icons.airline_seat_legroom_extra)),
   ];
 
   void drawerItemOnPressed(int i) {
@@ -71,6 +73,9 @@ class HomeViewModel extends ChangeNotifier {
         break;
       case 5:
         _navigationService.navigateTo(Routes.loginPage);
+        break;
+      case 6:
+        _navigationService.navigateTo(Routes.batteryStationPage);
         break;
     }
   }
