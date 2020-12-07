@@ -12,10 +12,10 @@ public class SecurityControl extends FlutterApplication {
     public void onCreate(){
         super.onCreate();
 
-        if((Build.VERSION.SDK_INT) >= (Build.VERSION_CODES.O)){
-            NotificationChannel intruderChannel = new NotificationChannel("intruderChannel", "Intruder alerts", NotificationManager.IMPORTANCE_HIGH);
-            NotificationManager intruderChannelManager = getSystemService(NotificationManager.class);
-            intruderChannelManager.createNotificationChannel(intruderChannel);
-        }
+//        if((Build.VERSION.SDK_INT) >= (Build.VERSION_CODES.O)){
+//            NotificationChannel intruderChannel = new NotificationChannel("intruderChannel", "Intruder alerts", NotificationManager.IMPORTANCE_HIGH);
+//            NotificationManager intruderChannelManager = getSystemService(NotificationManager.class);
+//            intruderChannelManager.createNotificationChannel(intruderChannel);
+//        }
     }
 }

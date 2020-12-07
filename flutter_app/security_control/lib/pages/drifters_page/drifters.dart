@@ -96,6 +96,7 @@ class StatusSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<StatusSectionViewModel>.reactive(
+      onModelReady: (model){model.initialise();},
       builder: (context, model, child) {
         print('StatusSectionViewModel built');
         return Card(

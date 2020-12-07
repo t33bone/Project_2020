@@ -1,5 +1,7 @@
 import 'package:stacked/stacked.dart';
 import 'package:security_control/models/gopigo.dart';
+import 'package:security_control/services/service_locator.dart';
+import 'package:security_control/services/server_sync_service.dart';
 
 class DriftersViewModel extends BaseViewModel {
   String _title = "DriftersPage<temp>"; //TODO FINAL: replace temp title
@@ -16,10 +18,11 @@ class MapSectionViewModel extends BaseViewModel {
 }
 
 class StatusSectionViewModel extends BaseViewModel {
+  ServerSyncService _serverSyncService = locator<ServerSyncService>();
   String _statusSectionTitle = "'GoPiGo Section Here";
   String get statusSectionTitle => _statusSectionTitle;
   //TODO generate gopigolist from server
-  final _gopigolist = <GoPiGo>[
+  List _gopigolist = <GoPiGo>[
     GoPiGo(
       1,
       'test car1',
@@ -36,6 +39,12 @@ class StatusSectionViewModel extends BaseViewModel {
       100,
     )
   ];
+  initialise() {
+    _serverSyncService.goPiGoListMap.listen((event) {
+      _gopigolist = event.values.toList();
+       notifyListeners();
+    });
+  }
   List<GoPiGo> get gopigolist => _gopigolist;
   double _animationHeight = 48.0;
   get animationHeight => _animationHeight;
