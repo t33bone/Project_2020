@@ -10,6 +10,8 @@ class GoPiGo {
   Function(int, String) _updateNameCallBack; // If not null, called when setName() is called
 
   GoPiGo(this._id, this._name, this._batterylevel);
+  GoPiGo.empty();
+
   GoPiGo.fromJson(String content, this._id, [Function(int, String) updateNameCallBack]){
     // Server brings our info in list form unfortunately, so we must do this manually
     // Content =
@@ -28,6 +30,8 @@ class GoPiGo {
     }
   }
 
+  // TODO: REMOVE THIS, TEMPORARY
+  DateTime get getTimestamp => DateTime.now();
   String get name => _name;
   int get id => _id;
   int get batterylevel => _batterylevel;

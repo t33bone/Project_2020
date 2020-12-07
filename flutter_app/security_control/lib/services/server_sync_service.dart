@@ -29,10 +29,11 @@ class ServerSyncService{
   LocalStorageService _localStorageService;
 
   // Gopigo data:
-  StreamController<Map> _goPiGoListMapControl = new StreamController.broadcast();
-  Stream<Map> get goPiGoListMap => _goPiGoListMapControl.stream;
+  StreamController<Map> _goPiGoListMapStreamControl = new StreamController.broadcast();
+  Stream<Map> get goPiGoListMapStream => _goPiGoListMapStreamControl.stream;
 
   Map<int, GoPiGo> _goPiGoListMap = Map();
+  Map<int, GoPiGo> get goPiGoListMap => _goPiGoListMap;
 
 
   ServerSyncService(){
@@ -74,7 +75,7 @@ class ServerSyncService{
             //    ever deleted from memory?
             // TODO: Maybe send all gopigos at once from isolate?
             _goPiGoListMap[message[1]] = GoPiGo.fromJson(message[2], message[1], setGoPiGoName);
-            _goPiGoListMapControl.add(_goPiGoListMap);
+            _goPiGoListMapStreamControl.add(_goPiGoListMap);
         }
       }
     });

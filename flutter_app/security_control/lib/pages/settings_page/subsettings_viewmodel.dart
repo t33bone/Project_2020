@@ -129,13 +129,13 @@ class SubSettingsViewModel extends ChangeNotifier {
     //   notifyListeners();
     // });
 
-    _serverSyncService.goPiGoListMap.listen((event) {
-      if(event is Map){
-        for(GoPiGo drifter in event.values){
-          print(drifter.name);
-        }
-      }
-    });
+    // _serverSyncService.goPiGoListMap.listen((gopigomap) {
+    //   if(gopigomap is Map){
+    //     for(GoPiGo drifter in gopigomap.values){
+    //       print(drifter.name);
+    //     }
+    //   }
+    // });
 
     //TODO: Demo, remove:
     _localStorageService.goPiGoExampleString.listen((value) {

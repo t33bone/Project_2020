@@ -53,7 +53,7 @@ class StatusSection extends StatelessWidget {
                         child: Row(
                           children: [
                             Icon(Icons.commute),
-                            Text(model.recentDevice.getName,
+                            Text(model.recentDevice.name,
                                 style: Theme.of(context).textTheme.bodyText2),
                           ],
                         ),
@@ -64,10 +64,10 @@ class StatusSection extends StatelessWidget {
                         child: Row(
                           children: [
                             Icon(Icons.lock_clock),
-                            Text(
-                                timeFormat
-                                    .format(model.recentDevice.getTimestamp),
-                                style: Theme.of(context).textTheme.bodyText2),
+                            // Text(
+                            //     timeFormat
+                            //         .format(model.recentDevice.getTimestamp),
+                            //     style: Theme.of(context).textTheme.bodyText2),
                           ],
                         ),
                       ),
@@ -135,18 +135,18 @@ class HistoryItem extends StatelessWidget {
       elevation: 3,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-        child: device.getId == -5
+        child: device.id == -5
             ? CircularProgressIndicator()
             : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Row(children: [
                     Icon(Icons.car_rental),
-                    Text(device.getName),
+                    Text(device.name),
                   ]),
                   Row(children: [
                     Icon(Icons.timer),
-                    Text(timeFormat.format(device.getTimestamp)),
+                    // Text(timeFormat.format(device.getTimestamp)),
                   ]),
                 ],
               ),
