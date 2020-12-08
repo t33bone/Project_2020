@@ -26,6 +26,9 @@ def home():
 # New queries for TestDatabase start
 #
 
+##################################################
+################### General ######################
+
 # Post a message by idDevice
 @app.route('/api/devices/post/message', methods=['POST'])
 def postDevicesMessage():
@@ -40,7 +43,17 @@ def postDevicesMessage():
     db.sqlInsert(query)
     return "Post successful"
 
-# New device
+# Get messages
+@app.route('/api/messages/get/messages', methods=['GET'])
+def getMessages():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM Message"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+# Post a new device
 @app.route('/api/devices/post/newdevice', methods=['POST'])
 def postNewDevice():
     print (request.is_json)
@@ -54,6 +67,26 @@ def postNewDevice():
     db.sqlInsert(query)
 
     return "Post successful"
+
+# GET Devices
+@app.route('/api/devices/get/devices', methods=['GET'])
+def getDevices():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM Devices"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+# GET latest locations
+@app.route('/api/devices/get/locations', methods=['GET'])
+def getLocations():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM Location ORDER BY Timestamp DESC"
+    data = db.sqlQuery(query)
+    return jsonify(data)
 
 # Example GET
 @app.route('/api/devices/get/devicelocationsstatus', methods=['GET'])
@@ -75,35 +108,6 @@ def getDeviceLatestCarAtChargeStation():
     data = db.sqlQuery(query)
     return jsonify(data)
 
-# Gopigo location POST
-@app.route('/api/devices/post/location', methods=['POST'])
-def postLocation():
-    print (request.is_json)
-    content = request.get_json()
-    print(content)
-    query = '''INSERT INTO Location (Segment, 
-                Devices_idDevice) 
-                values ('{}','{}')'''.format(
-                    content['Segment'], 
-                    content['Devices_idDevice'])
-    db.sqlInsert(query)
-
-    return "Post successful"
-
-# Gopigo status POST
-@app.route('/api/devices/post/status', methods=['POST'])
-def postStatus():
-    print (request.is_json)
-    content = request.get_json()
-    print(content)
-    query = '''INSERT INTO Charger_Status (Status, 
-                Devices_idDevice) 
-                values ('{}','{}')'''.format(
-                    content['Status'], 
-                    content['Devices_idDevice'])
-    db.sqlInsert(query)
-
-    return "Post successful"
 
 ##################################################
 ############## Android app start #################
@@ -325,6 +329,8 @@ def postRuuvitagDetails():
 ##################################################
 ################# Drone start ####################
 
+# Post message: /api/devices/post/message (see first app.route)
+
 # Post a drone status & measurements by idDevice
 @app.route('/api/drone/post/details', methods=['POST'])
 def postDroneDetails():
@@ -341,8 +347,6 @@ def postDroneDetails():
     db.sqlInsert(query)
     return "Post successful"
 
-# Post message: /api/devices/post/message (see first app.route)
-
 # Get drone info
 @app.route('/api/drone/get/details', methods=['GET'])
 def getDroneDetails():
@@ -358,6 +362,53 @@ def getDroneDetails():
 
 ##################################################
 ################# Gopigo start ###################
+
+# Post message: /api/devices/post/message (see first app.route)
+
+# Gopigo (and Ruuvitag?) location POST
+@app.route('/api/devices/post/location', methods=['POST'])
+def postLocation():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Location (Segment, 
+                Devices_idDevice) 
+                values ('{}','{}')'''.format(
+                    content['Segment'], 
+                    content['Devices_idDevice'])
+    db.sqlInsert(query)
+
+    return "Post successful"
+
+# Gopigo charger status POST
+@app.route('/api/devices/post/status', methods=['POST'])
+def postStatus():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Charger_Status (Status, 
+                Devices_idDevice) 
+                values ('{}','{}')'''.format(
+                    content['Status'], 
+                    content['Devices_idDevice'])
+    db.sqlInsert(query)
+
+    return "Post successful"
+
+# Gopigo battery POST
+@app.route('/api/devices/post/battery', methods=['POST'])
+def postBattery():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Battery (BatteryStatus, 
+                Devices_idDevice) 
+                values ('{}','{}')'''.format(
+                    content['BatteryStatus'], 
+                    content['Devices_idDevice'])
+    db.sqlInsert(query)
+
+    return "Post successful"
 
 #
 # End
