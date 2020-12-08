@@ -254,7 +254,37 @@ def getStationHistory(timest):
     return jsonify(data)
 
 ##################################################
-############## Ruuvitag start #################
+############## Ruuvitag start ####################
+
+# Get doors
+@app.route('/api/ruuvi/get/doors', methods=['GET'])
+def getDoors():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM Door"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+# Get door status
+@app.route('/api/ruuvi/get/doorstatus', methods=['GET'])
+def getDoorsStatus():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM Door_status ORDER BY Timestamp DESC"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+# Get measurements
+@app.route('/api/ruuvi/get/measurements', methods=['GET'])
+def getDoorMeasurements():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT * FROM Measurements ORDER BY Timestamp DESC"
+    data = db.sqlQuery(query)
+    return jsonify(data)
 
 # Assign a door for Ruuvitag
 @app.route('/api/ruuvi/post/newdoor', methods=['POST'])
