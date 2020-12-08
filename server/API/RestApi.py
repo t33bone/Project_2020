@@ -26,6 +26,20 @@ def home():
 # New queries for TestDatabase start
 #
 
+# Post a message by idDevice
+@app.route('/api/devices/post/message', methods=['POST'])
+def postDevicesMessage():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Message (Messagetype, Explanation, Devices_idDevice) 
+                VALUES ("{}", "{}", "{}")'''.format(
+                    content['Messagetype'],
+                    content['Explanation'],
+                    content['Devices_idDevice']) 
+    db.sqlInsert(query)
+    return "Post successful"
+
 # New device
 @app.route('/api/devices/post/newdevice', methods=['POST'])
 def postNewDevice():
@@ -151,9 +165,9 @@ def getRuuvitagLimits(deviceid):
     print (request.is_json)
     content = request.get_json()
     print(content)
-    query = '''SELECT Measurements_Limits.Temperature, Measurements_Limits.Humidity, Measurements_Limits.AirPressure, 
-    Measurements_Limits.Batterylimit FROM Devices LEFT JOIN Measurements_Limits 
-    ON Measurements_Limits.Devices_idDevice = Devices.idDevice WHERE Devices.idDevice = "{}"'''.format(deviceid)
+    query = '''SELECT Measurements_Limits.Temperature_max, Measurements_Limits.Temperature_min, Measurements_Limits.Humidity_max, Measurements_Limits.Humidity_min, 
+            Measurements_Limits.AirPressure_max, Measurements_Limits.AirPressure_min, Measurements_Limits.Batterylimit FROM Devices
+            LEFT JOIN Measurements_Limits ON Measurements_Limits.Devices_idDevice = Devices.idDevice WHERE Devices.idDevice = "{}"'''.format(deviceid)
     data = db.sqlQuery(query)
     return jsonify(data)
 
@@ -163,11 +177,14 @@ def postRuuvitagLimits():
     print (request.is_json)
     content = request.get_json()
     print(content)
-    query = '''UPDATE Measurements_Limits SET Temperature = "{}", Humidity = "{}", AirPressure = "{}", 
-                Batterylimit = "{}" WHERE Devices_idDevice = "{}"'''.format(
-                    content['Temperature'],
-                    content['Humidity'],
-                    content['AirPressure'],
+    query = '''UPDATE Measurements_Limits SET Temperature_max = "{}", Temperature_min = "{}", Humidity_max = "{}", Humidity_min = "{}", 
+                AirPressure_max = "{}", AirPressure_min = "{}", Batterylimit = "{}" WHERE Devices_idDevice = "{}"'''.format(
+                    content['Temperature_max'],
+                    content['Temperature_min'],
+                    content['Humidity_max'],
+                    content['Humidity_min'],
+                    content['AirPressure_max'],
+                    content['AirPressure_min'],
                     content['Batterylimit'],
                     content['Devices_idDevice']) 
     db.sqlInsert(query)
@@ -228,7 +245,7 @@ def getStationHistory(timest):
     print(content)
     query = '''SELECT Devices.DeviceName, Charger_Status.Timestamp
                 FROM Devices INNER JOIN Charger_Status ON Devices.idDevice = Charger_Status.Devices_idDevice 
-                WHERE Charger_Status.Timestamp < "{}" LIMIT 10;'''.format(timest)
+                WHERE Charger_Status.Timestamp < "{}" LIMIT 10'''.format(timest)
     data = db.sqlQuery(query)   # 2020-12-01 12:12:12 (yyyy-mm-dd hh:mm:ss) timestamp format as input
     return jsonify(data)
 
@@ -304,6 +321,43 @@ def postRuuvitagDetails():
                     content['AirPressure']) 
     db.sqlInsert(query)
     return "Post successful"
+
+##################################################
+################# Drone start ####################
+
+# Post a drone status & measurements by idDevice
+@app.route('/api/drone/post/details', methods=['POST'])
+def postDroneDetails():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Drone_Status (Status, Speed, FlyHeight, Acceleration, Devices_idDevice) 
+                VALUES ("{}", "{}", "{}", "{}", "{}")'''.format(
+                    content['Status'],
+                    content['Speed'],
+                    content['FlyHeight'],
+                    content['Acceleration'],
+                    content['Devices_idDevice']) 
+    db.sqlInsert(query)
+    return "Post successful"
+
+# Post message: /api/devices/post/message (see first app.route)
+
+# Get drone info
+@app.route('/api/drone/get/details', methods=['GET'])
+def getDroneDetails():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''SELECT Devices.DeviceName, Drone_Status.Status, Drone_Status.Speed, Drone_Status.FlyHeight, Drone_Status.Acceleration, Drone_Status.Timestamp 
+                FROM Devices LEFT JOIN Drone_Status ON Devices.idDevice = Drone_Status.Devices_idDevice WHERE DeviceType = "drone" 
+                ORDER BY Drone_Status.Timestamp DESC'''
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
+
+##################################################
+################# Gopigo start ###################
 
 #
 # End
