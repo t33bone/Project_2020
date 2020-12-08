@@ -10,6 +10,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
+      onModelReady: (model){model.initialise();},
       viewModelBuilder: () => HomeViewModel(),
       builder: (context, model, child) => Scaffold(
         appBar: AppBar(
@@ -59,9 +60,9 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        body: Container(
-          child: Column(
-            children: [
+        body: DefaultTabController(
+            length: 2,
+            child: Column(children: [
               Card(
                 child: Column(
                   children: [
@@ -112,74 +113,91 @@ class HomePage extends StatelessWidget {
                       thickness: 1,
                     ),
                     ListTile(
-                      leading: model.intruderAlert == true
+                      leading: model.actionsRequired.length > 0
                           ? Icon(Icons.info,
                               color: Theme.of(context).accentColor)
                           : Icon(Icons.check_circle),
-                      title: model.intruderAlert == true
+                      title: model.actionsRequired.length > 0
                           ? Text(model.actionsRequired.length.toString() +
                               model.actionRequiredLabel)
                           : Text(model.noActionRequiredLabel),
-                      onTap: () => model.intruderAlert == true
+                      onTap: () => model.actionsRequired.length > 0
                           ? model.showRequiredActionsDialog(context)
                           : null,
                     ),
+                    Divider(),
+                    TabBar(
+                      indicatorColor: Theme.of(context).primaryColor,
+                      tabs: [
+                        Tab(icon: Icon(Icons.directions_car, color: Colors.grey,)),
+                        Tab(icon: Icon(Icons.ac_unit, color: Colors.grey))
+                      ],
+                    ),
                   ],
                 ),
+
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: model.devicesList.length,
-                  itemBuilder: (context, i) {
-                    return Card(
-                      child: ListTile(
-                        leading: Container(
-                          //icon sizes adjusted to match material design
-                          width: 58,
-                          height: 48,
-                          // width: MediaQuery.of(context).size.width * 0.15,
-                          // height: MediaQuery.of(context).size.height * 0.70,
-                          padding: EdgeInsets.symmetric(vertical: 4.0),
-                          alignment: Alignment.center,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.battery_std,
+                child: Column(children: [
+
+                  Expanded(
+                      child: TabBarView(children: [
+                    ListView.builder(
+                      itemCount: model.goPiGoList.length,
+                      itemBuilder: (context, i) {
+                        return Card(
+                          child: ListTile(
+                            leading: Container(
+                              //icon sizes adjusted to match material design
+                              width: 58,
+                              height: 48,
+                              // width: MediaQuery.of(context).size.width * 0.15,
+                              // height: MediaQuery.of(context).size.height * 0.70,
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              alignment: Alignment.center,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.battery_std,
+                                  ),
+                                  Text(
+                                    model.goPiGoList[i].batterylevel
+                                            .toString() +
+                                        '%',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                model.devicesList[i].batterylevel.toString() +
-                                    '%',
-                                style: Theme.of(context).textTheme.bodyText2,
-                              ),
-                            ],
+                            ),
+                            title: Text(
+                              model.goPiGoList[i].name,
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            trailing: model.goPiGoList[i].connected == true
+                                ? Text(
+                                    model.deviceConnected,
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : Text(
+                                    model.deviceDisconnected,
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                            //onTap: () {}, //on tap goto device page/ device settings?
                           ),
-                        ),
-                        title: Text(
-                          model.devicesList[i].name,
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        trailing: model.devicesList[i].connected == true
-                            ? Text(
-                                model.deviceConnected,
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : Text(
-                                model.deviceDisconnected,
-                                style: TextStyle(
-                                    color: Theme.of(context).accentColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                        //onTap: () {}, //on tap goto device page/ device settings?
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+                        );
+                      },
+                    ),
+
+                        Icon(Icons.directions_transit),
+                  ])),
+                ]),
+              )
+            ])),
       ),
     );
   }

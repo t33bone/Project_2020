@@ -11,7 +11,8 @@
     <application
         android:name=".SecurityControl"
         android:label="Security Control"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <service android:name=".ServerSyncService" android:exported="true" android:enabled="true"/>
         <activity
             android:name=".MainActivity"

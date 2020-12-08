@@ -14,10 +14,9 @@ import 'package:security_control/services/local_storage_service.dart';
 import 'package:security_control/services/service_locator.dart';
 import 'package:http/http.dart' as http;
 import 'package:security_control/models/gopigo.dart';
+import 'package:security_control/models/message.dart';
 
-int _battery;
-
-class ServerSyncService{
+class MessagesSyncService{
 
   var _isolate;
   ReceivePort _receivePort;
@@ -29,22 +28,19 @@ class ServerSyncService{
   LocalStorageService _localStorageService;
 
   // Gopigo data:
-  StreamController<Map> _goPiGoListMapStreamControl = new StreamController.broadcast();
-  Stream<Map> get goPiGoListMapStream => _goPiGoListMapStreamControl.stream;
+  StreamController<List> _messageListController = new StreamController.broadcast();
+  Stream<List> get messageListStream => _messageListController.stream;
 
-  Map<int, GoPiGo> _goPiGoListMap = Map();
-  Map<int, GoPiGo> get goPiGoListMap => _goPiGoListMap;
+  List _messageList = List();
+  List get messageList => _messageList;
 
 
-  ServerSyncService(){
-    print('(TRACE) ServerSyncService:constructor.');
+  MessagesSyncService(){
+    print('(TRACE) MessagesSyncService:constructor.');
     //final isolates = IsolateHandler();
     _receivePort = ReceivePort();
     _receiveBroadcastStream = _receivePort.asBroadcastStream();
     _localStorageService = locator<LocalStorageService>();
-
-    // _goPiGoJSONMap[ID] = "JSON HERE";
-    // _goPiGoJSONMapControl.add(_goPiGoJSONMap);
 
 
     _tempStreamSubscription = _receiveBroadcastStream.listen((message) {
@@ -54,7 +50,7 @@ class ServerSyncService{
         switch(message[0]){
           case "register":
             _sendPort = message[1];
-            print('(TRACE) ServerSyncService:constructor: Registered sender');
+            print('(TRACE) MessagesSyncService:constructor: Registered sender');
             //_sendPort.send(["register", locator]);
             _registerSettingListeners();
             _sendPort.send([
@@ -64,18 +60,18 @@ class ServerSyncService{
             _sendPort.send(
                 ["setaddress", _localStorageService.serverAddress.getValue()]);
             break;
-          case "gopigoids":
-            // Blank
 
-          case "gopigo":
-            // Message[1] = id
-            // message[2] = gopigoJSON: "[[data]]"
-            // Create a gopigo object of these and add it to the Map!
-            // Thought: does this introduce memory leaks? Are the old objects
-            //    ever deleted from memory?
-            // TODO: Maybe send all gopigos at once from isolate?
-            _goPiGoListMap[message[1]] = GoPiGo.fromJson(message[2], message[1], setGoPiGoName);
-            _goPiGoListMapStreamControl.add(_goPiGoListMap);
+          case "messages":
+            // message[1] = messageJSON: "[[messagetype, explanation, devicename], [messagetype, explanation, devicename]]"
+
+            List _tempList = jsonDecode(message[1]);
+            List _tempMessagesList = List();
+            for(var msg in _tempList){
+              _tempMessagesList.add(Message(msg[0], msg[4], msg[1], msg[3] , msg[2], clearMessage));
+              print("(TRACE): MESSAGE from MessagesSyncService: " + msg.toString());
+            }
+            _messageList = _tempMessagesList;
+            _messageListController.add(_messageList);
         }
       }
     });
@@ -84,8 +80,8 @@ class ServerSyncService{
 
   }
 
-  setGoPiGoName(int id, String name){
-    _sendPort.send(["setgopigoname", id, name]);
+  clearMessage(int id){
+    _sendPort.send(["clearmessage", id]);
   }
 
   // Listen to server update interval and address, change when needed:
@@ -104,12 +100,12 @@ class ServerSyncService{
   }
 
   void startSync(){
-    _sendPort.send("syncgopigos");
+    _sendPort.send("start");
   }
 
-  // void setUpdateInterval(double seconds){
-  //   _sendPort.send(["setinterval", seconds]);
-  // }
+// void setUpdateInterval(double seconds){
+//   _sendPort.send(["setinterval", seconds]);
+// }
 
 }
 
@@ -122,7 +118,7 @@ void entryPoint(SendPort sendPort) {
   Timer syncTimer;
 
   ReceivePort receivePort = ReceivePort();
-  _SyncIsolate _syncIsolate = new _SyncIsolate(sendPort, receivePort);
+  _SyncMessageIsolate _syncMessageIsolate = new _SyncMessageIsolate(sendPort, receivePort);
   GetIt _locator;
 
   receivePort.listen((message) {
@@ -130,31 +126,30 @@ void entryPoint(SendPort sendPort) {
     // TODO: Define different get methods to perform when receiving messages
 
     if(message is List){
-      print('(TRACE) SyncIsolate:entryPoint.receivePort.listen:' + message[0]);
+      print('(TRACE) MessagesSyncService:entryPoint.receivePort.listen:' + message[0]);
 
       switch(message[0]){
         case "setinterval":
-          _syncIsolate.setDelay(message[1]);
+          _syncMessageIsolate.setDelay(message[1]);
           break;
         case "setaddress":
-          _syncIsolate.setAddress(message[1]);
+          _syncMessageIsolate.setAddress(message[1]);
           break;
-        case "setgopigoname":
-          // message [1] = id
-          // message [2] = name
-          _syncIsolate.setGoPiGoName(message[1], message[2]);
+        case "clearmessage":
+        // message [1] = id
+          _syncMessageIsolate.clearMessage(message[1]);
           break;
-        // case
+      // case
       }
 
     }
     else if (message is String) {
-      print('(TRACE) SyncIsolate:entryPoint.receivePort.listen:' + message);
+      print('(TRACE) SyncMessageIsolate: entryPoint.receivePort.listen:' + message);
       if (message == "stop") {
-        _syncIsolate.stopSync();
+        _syncMessageIsolate.stopSync();
       }
-      else if (message == "syncgopigos") {
-        _syncIsolate.startSync();
+      else if (message == "start") {
+        _syncMessageIsolate.startSync();
       }
     }
   });
@@ -163,9 +158,9 @@ void entryPoint(SendPort sendPort) {
 
 }
 
-class _SyncIsolate {
+class _SyncMessageIsolate {
 
-  final String _debugTag = "(TRACE) _SyncIsolate: ";
+  final String _debugTag = "(TRACE) _SyncMessageIsolate (messages): ";
 
   SendPort _sendPort;
   ReceivePort _receivePort;
@@ -180,7 +175,7 @@ class _SyncIsolate {
   String _sensorIDListString;
   List _sensorIDList;
 
-  _SyncIsolate(SendPort sPort, ReceivePort rPort){
+  _SyncMessageIsolate(SendPort sPort, ReceivePort rPort){
     _sendPort = sPort;
     _receivePort = rPort;
     _syncDelay = Duration(seconds: 5);
@@ -223,76 +218,44 @@ class _SyncIsolate {
   }
 
   _sync(Timer timer){
-    syncGoPiGoIDList();
-    syncGoPiGos();
-    for(var i in _goPiGoIDList){
-      print(_debugTag + i.toString());
-    }
+    _syncMessages();
   }
 
-  // Function to get gopigo id JSON from server:
-  syncGoPiGoIDList () async{
-    // Get GoPiGo ID's and compare them with local values
+
+  // Sync gopigos from id list:
+  void _syncMessages() async{
     var response;
     try{
       response =
-      await _client.get(_address + "/api/devices/get/gopigoids");
-      _goPiGoIDListString = response.body;
-
+      await _client.get(_address + "/api/devices/get/activemessages");
     }
     catch(err){
-      print(_debugTag + "ERROR: Unable to fetch GoPiGoIDs from server: " + err.toString());
+      print(_debugTag + "ERROR: Unable to fetch messages from server:" + err.toString());
     }
     finally{
-      print(_debugTag + "GOPIGO JSON RESPONSE: " + _goPiGoIDListString);
-
-      // Returned is a list of lists with one element each: [[1],[2],[3],...]
-      List tempGoPiGoIDList = jsonDecode(_goPiGoIDListString);
-
-      // Loop through list of ID's, add if needed
-      for(var i in tempGoPiGoIDList) {
-        if (_goPiGoIDList.indexOf(i[0]) == -1) {
-          _goPiGoIDList.add(i[0]);
-        }
-      }
-    }
-  }
-
-  // Sync gopigos from id list:
-  void syncGoPiGos() async{
-    for(var id in _goPiGoIDList) {
-      var response;
-      try{
-        response =
-        await _client.get(_address + "/api/gopigoid/get/" + id.toString());
-      }
-      catch(err){
-        print(_debugTag + "ERROR: Unable to fetch GoPiGo details with id:" + id.toString() + ": " + err.toString());
-      }
-      finally{
-        print(_debugTag + "Got gopigo details with id " + id.toString() + " " + response.body);
-        _sendPort.send(["gopigo", id, response.body]);
-      }
+      print(_debugTag + "Got messages from server: " + response.body);
+      _sendPort.send(["messages", response.body]);
     }
   }
 
   // Set gopigo name by id. Called separately, not from timer.
-  void setGoPiGoName(int id, String name)async{
+  void clearMessage(int id)async{
     var response;
     String body;
-    try{
-      body = '{"DeviceName":"' + name + '","idDevice":"' + id.toString() + '"}';
-      print(_debugTag + "Sending POST to set gopigo name with id: " + id.toString() + ". Body to send: " + body);
-      response = await _client.post(_address + "/api/devices/post/newdevicename",
-          headers: {"Content-Type": "application/json"},
-          body: body);
-    }
-    catch(err){
-      print(_debugTag + "ERROR: Unable to POST GoPiGoName with id: " + id.toString() + ": " + err.toString());
-    }
-    finally{
-      print(_debugTag + "POST response set gopigo name with id: " +id.toString() + ": " + response.body);
-    }
+    // TODO: Uncomment clear message POST method
+    // try{
+      body = '{"idMessage":"' + id.toString() + '"}';
+      print(_debugTag + "Sending POST to clear message with id: " + id.toString() + ". Body to send: " + body);
+    //   response = await _client.post(_address + "/api/message/post/messageinactive",
+    //       headers: {"Content-Type": "application/json"},
+    //       body: body);
+    // }
+    // catch(err){
+    //   print(_debugTag + "ERROR: Unable to POST clear message with id: " + id.toString() + ": " + err.toString());
+    // }
+    // finally{
+    //   print(_debugTag + "POST response clear message with id: " +id.toString() + ": " + response.body);
+    // }
   }
 
   void setGoPiGoIDList(List IDList){

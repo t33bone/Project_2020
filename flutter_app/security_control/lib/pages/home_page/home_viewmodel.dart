@@ -1,3 +1,4 @@
+import 'package:security_control/models/message.dart';
 import 'package:security_control/router.gr.dart';
 import 'package:security_control/services/navigation_service.dart';
 import 'package:security_control/services/service_locator.dart';
@@ -5,8 +6,14 @@ import 'package:security_control/services/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
+import 'package:security_control/services/messages_sync_service.dart';
+import 'package:security_control/services/server_sync_service.dart';
+
 class HomeViewModel extends ChangeNotifier {
   NavigationService _navigationService = locator<NavigationService>();
+  MessagesSyncService _messagesSyncService = locator<MessagesSyncService>();
+  ServerSyncService _serverSyncService = locator<ServerSyncService>();
+
   String _appBarTitle = "Security Control";
   String _accountName = "Test User";
   String _accountEmail = "TestUser@email.com";
@@ -19,29 +26,55 @@ class HomeViewModel extends ChangeNotifier {
   bool _serverConnected = true;
   String _noIntruders = "No intruders";
   String _intruders = "Intruder!";
-  String _actionRequiredLabel = " action(s) required";
+  String _actionRequiredLabel = " notification(s)";
   String _noActionRequiredLabel = "Everything OK";
-  bool _intruderAlert = true;
+  bool _intruderAlert = false;
+  int _criticalActionsCount = 0;
   String _deviceConnected = "CONNECTED";
   String _deviceDisconnected = "DISCONNECTED";
 
   String get appBarTitle => _appBarTitle;
+
   String get accountName => _accountName;
+
   String get accountEmail => _accountEmail;
+
   double get avatarFontSize => _avatarFontSize;
+
   String get serverConnectionLabel => _serverConnectionLabel;
+
   String get securityStatusLabel => _securityStatusLabel;
+
   double get labelFontSize => _labelFontSize;
+
   String get serverOnline => _serverOnline;
+
   String get serverOffline => _serverOffline;
+
   bool get serverConnected => _serverConnected;
+
   String get noIntruders => _noIntruders;
+
   String get intruders => _intruders;
+
   bool get intruderAlert => _intruderAlert;
+
   String get actionRequiredLabel => _actionRequiredLabel;
+
   String get noActionRequiredLabel => _noActionRequiredLabel;
+
+  int get criticalActionsCount => _criticalActionsCount;
+
   String get deviceConnected => _deviceConnected;
+
   String get deviceDisconnected => _deviceDisconnected;
+
+  List _goPiGoList;
+  List _sensorList;
+
+  List get goPiGoList => _goPiGoList;
+
+  List get sensorList => _sensorList;
 
   List<MyDrawerItems> drawerItems = <MyDrawerItems>[
     const MyDrawerItems('Drifters', Icon(Icons.directions_car_rounded)),
@@ -80,24 +113,7 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  List<String> actionsRequired = <String>[
-    'Call 112',
-    'Run',
-    'testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-  ];
+  List actionsRequired;
 
   List<Devices> devicesList = <Devices>[
     Devices(1, 'test car1', 24, true),
@@ -111,10 +127,37 @@ class HomeViewModel extends ChangeNotifier {
     Devices(9, 'Auto7', 49, true),
   ];
 
+  initialise() {
+    _messagesSyncService.messageListStream.listen((event) {
+      actionsRequired = event;
+      _criticalActionsCount = 0;
+      for(Message action in actionsRequired){
+        if(action.messageType == "Intruder"){
+          _intruderAlert = true;
+          _criticalActionsCount++;
+        }
+        else if(action.messageType == "Error"){
+          _criticalActionsCount++;
+        }
+      }
+      notifyListeners();
+    });
+
+    _serverSyncService.goPiGoListMapStream.listen((event) {
+      _goPiGoList = event.values.toList();
+      notifyListeners();
+    });
+    _goPiGoList = _serverSyncService.goPiGoListMap.values.toList();
+    actionsRequired = _messagesSyncService.messageList;
+  }
+
   showRequiredActionsDialog(BuildContext context) {
     Widget clearButton = FlatButton(
       child: Text("CLEAR ALL"),
       onPressed: () {
+        for(var msg in actionsRequired){
+          msg.clear();
+        }
         Navigator.of(context).pop();
         //clear actionsrequired
       },
@@ -127,22 +170,35 @@ class HomeViewModel extends ChangeNotifier {
     );
     AlertDialog actions = AlertDialog(
       scrollable: true,
-      title: Text("Required action(s)"),
+      title: Text("Notification(s)"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
-            width: MediaQuery.of(context).size.width * 0.75,
-            height: MediaQuery.of(context).size.height * 0.15,
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.4,
             child: ListView.builder(
               itemCount: actionsRequired.length,
               itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                    title: Text(actionsRequired[index]),
-                    onTap: () {
-                      //POST MESSAGE CLEARED WITH ID
-                      clearMessageDialog(context);
-                    });
+                return Card(
+                    child: InkWell(
+                        onTap: () {
+                          //POST MESSAGE CLEARED WITH ID
+                          clearMessageDialog(context, actionsRequired[index]);
+                        },
+                        child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Column(mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                              Text(actionsRequired[index].deviceName +": " +
+                                  actionsRequired[index].messageType,
+                                style: Theme.of(context).textTheme.headline6,),
+                              Text(actionsRequired[index].explanation),
+                              Divider(),
+                              Text(actionsRequired[index].timestamp, style: TextStyle(color: Colors.grey)),
+
+                            ]))));
               },
             ),
           ),
@@ -162,7 +218,7 @@ class HomeViewModel extends ChangeNotifier {
     );
   }
 
-  clearMessageDialog(BuildContext context) {
+  bool clearMessageDialog(BuildContext context, Message msg) {
     Widget noButton = FlatButton(
       child: Text("NO"),
       onPressed: () {
@@ -172,8 +228,8 @@ class HomeViewModel extends ChangeNotifier {
     Widget yesButton = FlatButton(
       child: Text("YES"),
       onPressed: () {
+        msg.clear(); // CLEAR MESSAGE
         Navigator.of(context).pop();
-        //clear message with id
       },
     );
     AlertDialog clearMessage = AlertDialog(
@@ -195,12 +251,14 @@ class HomeViewModel extends ChangeNotifier {
 
 class MyDrawerItems {
   const MyDrawerItems(this.name, this.icon);
+
   final String name;
   final Icon icon;
 }
 
 class Devices {
   Devices(this.id, this.name, this.batterylevel, this.connected);
+
   final int id;
   final String name;
   final int batterylevel;

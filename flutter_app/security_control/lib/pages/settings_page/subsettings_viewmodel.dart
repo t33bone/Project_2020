@@ -7,11 +7,13 @@ import 'package:security_control/services/navigation_service.dart';
 import 'package:security_control/services/server_sync_service.dart';
 import 'package:security_control/services/service_locator.dart';
 import 'package:security_control/services/local_storage_service.dart';
+import 'package:security_control/services/messages_sync_service.dart';
 
 class SubSettingsViewModel extends ChangeNotifier {
 
   NavigationService _navigationService = locator<NavigationService>();
   LocalStorageService _localStorageService = locator<LocalStorageService>();
+  MessagesSyncService _messagesSyncService = locator<MessagesSyncService>();
 
   String _serverSettingsLabel = "Server settings";
   String _notificationSettingsLabel = "Notifications";
@@ -171,10 +173,12 @@ class SubSettingsViewModel extends ChangeNotifier {
 
   stopSync(){
     _serverSyncService.stopSync();
+    _messagesSyncService.stopSync();
   }
 
   startSync(){
     _serverSyncService.startSync();
+    _messagesSyncService.startSync();
   }
 
 }
