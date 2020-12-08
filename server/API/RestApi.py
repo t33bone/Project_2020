@@ -119,7 +119,7 @@ def getActiveMessages():
     print (request.is_json)
     content = request.get_json()
     print(content)
-    query = '''SELECT Message.idMessage, Message.Messagetype, Message.Explanation, Message.Timestamp, Devices.Devicename
+    query = '''SELECT Message.idMessage, Message.Messagetype, Message.Explanation, date_format(Message.Timestamp, '%Y-%m-%d %T'), Devices.Devicename
     FROM Devices INNER JOIN Message ON Devices.idDevice = Message.Devices_idDevice WHERE Message.Active = "1"'''
     data = db.sqlQuery(query)
     return jsonify(data)
@@ -247,7 +247,7 @@ def getStationHistory(timest):
     print (request.is_json)
     content = request.get_json()
     print(content)
-    query = '''SELECT Devices.DeviceName, Charger_Status.Timestamp
+    query = '''SELECT Devices.DeviceName, date_format(Charger_Status.Timestamp, '%Y-%m-%d %T')
                 FROM Devices INNER JOIN Charger_Status ON Devices.idDevice = Charger_Status.Devices_idDevice 
                 WHERE Charger_Status.Timestamp < "{}" LIMIT 10'''.format(timest)
     data = db.sqlQuery(query)   # 2020-12-01 12:12:12 (yyyy-mm-dd hh:mm:ss) timestamp format as input
@@ -353,7 +353,7 @@ def getDroneDetails():
     print (request.is_json)
     content = request.get_json()
     print(content)
-    query = '''SELECT Devices.DeviceName, Drone_Status.Status, Drone_Status.Speed, Drone_Status.FlyHeight, Drone_Status.Acceleration, Drone_Status.Timestamp 
+    query = '''SELECT Devices.DeviceName, Drone_Status.Status, Drone_Status.Speed, Drone_Status.FlyHeight, Drone_Status.Acceleration, date_format(Drone_Status.Timestamp, '%Y-%m-%d %T') 
                 FROM Devices LEFT JOIN Drone_Status ON Devices.idDevice = Drone_Status.Devices_idDevice WHERE DeviceType = "drone" 
                 ORDER BY Drone_Status.Timestamp DESC'''
     data = db.sqlQuery(query)
