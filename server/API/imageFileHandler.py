@@ -6,6 +6,8 @@ import re
 fileLocationTrue = "C://Users//teemu//OneDrive//Asiakirjat//Koulujuttuja//testImage.jpg"
 fileLocation = "C:/Users/teemu/OneDrive/Asiakirjat/Koulujuttuja/"
 fileType = "jpg"
+
+#get single image according to the name. Returns it in base64 format
 def getImage(fileName):
     try:
         fileName = fileName.strip()
@@ -19,6 +21,25 @@ def getImage(fileName):
         print("File not found")
 
 
+# Gets multiple images according to the given image names. Returns it in base64 format with imagename attached.
+# syntax for image string is: imageName:{base64Image}. User needs to parse the imagename out of the image string
+def getMultipleImages(fileNames):
+    imageFiles = []
+    for name in fileNames:
+        try:
+            fileName = name.strip()
+            filepath = os.path.join(fileLocation+name+"."+fileType)
+            with open(filepath, "rb") as image:
+                imageFile = str(base64.b64encode(image.read()))
+                imageFiles.append(name+":"+imageFile) 
+            image.close()
+        
+        except IOError:
+            print("File " + name + " not found")
+
+    return imageFiles
+
+# Saves image on the disk
 def saveImage(fileName, fileData):
 
     fileName = fileName.strip()
@@ -29,14 +50,16 @@ def saveImage(fileName, fileData):
         print("Writing done, imagename: " + fileName)
     f.close()
 
-def getImageSQLQueryEverything():
-    query = '''Select * from Devices'''
+# SQL query for getting image names for specific device
+def getImageSQLQueryDeviceID(deviceID):
+
+    query = '''Select Names from Images Where Devices_idDevice = "{}"'''.format(str(deviceID))
+
     imageNames = str(db.sqlQuery(query))
-    print(imageNames)
-    #imageNames = imageNames.translate(None, "()")
-    imageNames = imageNames.split(", (")
-    print(imageNames)
+    
+    imageNames = imageNames.replace("(","")
+    imageNames = imageNames.replace(")","")
+    imageNames = imageNames.replace(",","")
+    imageNames = imageNames.split(" ")
+
     return imageNames
-
-
-getImageSQLQueryEverything()
