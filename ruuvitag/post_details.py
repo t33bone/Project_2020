@@ -9,16 +9,18 @@ macs = ['C1:05:25:89:4A:F0',
         'DD:39:47:16:BA:F5',
         'EF:12:4E:E0:FC:95']
 
-arrayLenght = len(macs)
+ruuviId = ['11','12',"13","14","15"] #These ids are assigned for RuuviTag in the database
+
+macsLenght = len(macs)
 
 postUrl = 'http://195.148.21.106/api/ruuvi/post/details'
 
 print('Starting')
 
 while True:
-    for i in range(arrayLenght):
+    for i in range(macsLenght):
         mac = macs[i]
-        idDevice = i+2 #for some reason the database doesn't like no.1
+        idDevice =  ruuviId[i]
 
         sensor = RuuviTag(mac)
         data = sensor.update()
