@@ -1,6 +1,6 @@
 
 # A simple example post client
-# Tables are in mydb in mysql (configured by RestApi.py and databaseConnect.py)
+# Tables are in TestDataBase (configured by RestApi.py and databaseConnect.py)
 
 import requests
 import json
@@ -9,8 +9,8 @@ import time
 local = False
 
 if local == False:
-    postUrl = 'http://195.148.21.106/api/devices/post/location'
-    postUrl2 = 'http://195.148.21.106/api/devices/post/status'
+    postUrl = 'http://195.148.21.106/api/devices/post/newdevicename'
+    postUrl2 = 'http://195.148.21.106/api/ruuvi/post/details'
 else:
     postUrl = 'http://127.0.0.1:5000/api/devices/post/location'
     postUrl2 = 'http://127.0.0.1:5000/api/devices/post/status'
@@ -19,8 +19,8 @@ while(True):
 
     # Example json data to post
     j_file = {
-        "Segment": "hall_II",
-        "Devices_idDevice": "2"}
+        "DeviceName": "autooooo",
+        "idDevice": "2"}
 
     print("Posting the data to: ", postUrl)
     x = requests.post(postUrl, json = j_file)
@@ -35,8 +35,10 @@ while(True):
 
 
     j_file2 = {
-        "Status": "1",
-        "Devices_idDevice": "2" }
+        "Devices_idDevice": "2",
+        "Temperature": "22", 
+        "Humidity": "22", 
+        "AirPressure": "22"}
 
     print("Posting the data to: ", postUrl2)
     x2 = requests.post(postUrl2, json = j_file2)

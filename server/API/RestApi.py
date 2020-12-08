@@ -26,6 +26,21 @@ def home():
 # New queries for TestDatabase start
 #
 
+# New device
+@app.route('/api/devices/post/newdevice', methods=['POST'])
+def postNewDevice():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Devices (DeviceName, 
+                DeviceType) 
+                values ('{}','{}')'''.format(
+                    content['DeviceName'], 
+                    content['DeviceType'])
+    db.sqlInsert(query)
+
+    return "Post successful"
+
 # Example GET
 @app.route('/api/devices/get/devicelocationsstatus', methods=['GET'])
 def getDeviceLocationStatus():
@@ -219,6 +234,34 @@ def getStationHistory(timest):
 
 ##################################################
 ############## Ruuvitag start #################
+
+# Assign a door for Ruuvitag
+@app.route('/api/ruuvi/post/newdoor', methods=['POST'])
+def postNewDoor():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Door (DoorName, 
+                Devices_idDevice) 
+                values ('{}','{}')'''.format(
+                    content['DoorName'], 
+                    content['Devices_idDevice'])
+    db.sqlInsert(query)
+
+    return "Post successful"
+
+# Update a door for Ruuvitag
+@app.route('/api/ruuvi/post/updatedoor', methods=['POST'])
+def postUpdateDoor():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''UPDATE Door SET Devices_idDevice = "{}" WHERE DoorName = "{}"'''.format(
+                    content['Devices_idDevice'], 
+                    content['DoorName'])
+    db.sqlInsert(query)
+
+    return "Post successful"    
 
 # Post message 
 @app.route('/api/ruuvi/post/message', methods=['POST'])
