@@ -8,9 +8,12 @@ import databaseConnect as db
 from datetime import date, datetime
 import re, json
 
-import base64
-from base64 import b64encode
-import os, os.path
+#import base64
+#from base64 import b64encode
+#import os, os.path
+
+import imageFileHandler as ifh
+
 #import io
 #import pillow
 
@@ -56,22 +59,15 @@ def postDevicesImage():
     content = request.get_json()
     print(content)
     devID = content["Devices_idDevice"] 
-    img_name = content["Names"]
-    img_b64 = content["images"]
-    try:
-        img_data = base64.b64decode(img_b64)
-        imgfilename = os.path.join(img_save_path + img_name)
-        with open(imgfilename, 'wb') as f:
-            f.write(img_data)
-
-        query = '''INSERT INTO Images (Devices_idDevice, Names) 
-                    VALUES ("{}", "{}")'''.format(devID, img_name)
-        db.sqlInsert(query)
-        return "Post successful"
-    except:
-        print("Image handling failed")
-    finally:
-        f.close
+    fileName = content["Names"]
+    fileData = content["images"]
+    # Save image
+    ifh.saveImage(fileName, fileData)
+    query = '''INSERT INTO Images (Devices_idDevice, Names) 
+                VALUES ("{}", "{}")'''.format(devID, fileName)
+    db.sqlInsert(query)
+    return "Post successful"
+    
 
 @app.route('/api/images/get/<deviceid>', methods=['GET'])
 def getImage(deviceid):
@@ -79,24 +75,9 @@ def getImage(deviceid):
     content = request.get_json()
     print(content)
     query = '''SELECT Names FROM Images WHERE Devices_idDevice = "{}" ORDER BY Timestamp DESC LIMIT 1'''.format(deviceid)
-    data = db.sqlQuery(query)
-    try:
-        for row in data:
-            Names = row[0]
-
-        file_list = os.listdir(img_save_path)
-        for filename in file_list:
-            if filename.endswith(Names):
-                with open(img_save_path + filename, mode="rb") as open_file:
-                    byte_content = open_file.read()
-                    base64_bytes = b64encode(byte_content)
-                    base64_str = base64_bytes.decode('utf-8')
-                    data = {"images": base64_str}
-    except:
-        print("Image handling/sending failed")
-    finally:
-        # Either returns just the image name (if image handling fails) or just the b64 decoded string as JSON        
-        return jsonify(data) 
+    fileName = db.sqlQuery(query)
+    img_rawdata = ifh.getImage(fileName)       
+    return jsonify(img_rawdata) 
 
 # Get image table
 @app.route('/api/images/get/table', methods=['GET'])
