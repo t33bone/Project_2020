@@ -67,7 +67,17 @@ def postDevicesImage():
                 VALUES ("{}", "{}")'''.format(devID, fileName)
     db.sqlInsert(query)
     return "Post successful"
-    
+
+@app.route('/api/imagesbytime/get/<timest>', methods=['GET']) 
+def getImageByTime(timest):
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''SELECT Devices.DeviceName, Images.Names, Devices_idDevice FROM Devices LEFT JOIN Images 
+                ON Devices.idDevice = Images.Devices_idDevice WHERE Images.Timestamp > "{}"'''.format(timest)
+    fileNames = db.sqlQuery(query)
+    img_rawdata = ifh.getMultipleImages(fileNames) # TODO: fix internal server errors: imageFileHandler.py
+    return jsonify(img_rawdata) 
 
 @app.route('/api/images/get/<deviceid>', methods=['GET'])
 def getImage(deviceid):

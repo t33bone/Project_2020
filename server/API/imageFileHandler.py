@@ -35,8 +35,8 @@ def getMultipleImages(fileNames):
     imageFiles = {"images": []}
     for name in fileNames:
         try:
-            fileName = name.strip()
-            filepath = os.path.join(fileLocation+name+"."+fileType)
+            fileName = name.strip() # TODO: fix AttributeError(s): 'tuple' object has no attribute 'strip'
+            filepath = os.path.join(fileLocation+name+"."+fileType) # TypeError: cannot concatenate 'str' and 'tuple' objects
             with open(filepath, "rb") as image:
                 imageFile = str(base64.b64encode(image.read()))
                 imageFiles["images"].append({name:imageFile}) 
