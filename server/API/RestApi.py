@@ -80,7 +80,6 @@ def getImage(deviceid):
     print(content)
     query = '''SELECT Names FROM Images WHERE Devices_idDevice = "{}" ORDER BY Timestamp DESC LIMIT 1'''.format(deviceid)
     data = db.sqlQuery(query)
-    # TODO: pick an image from img_save_path + img_name and add it to this json
     try:
         for row in data:
             Names = row[0]
@@ -93,11 +92,22 @@ def getImage(deviceid):
                     base64_bytes = b64encode(byte_content)
                     base64_str = base64_bytes.decode('utf-8')
                     data = {"images": base64_str}
-
     except:
         print("Image handling/sending failed")
-    finally:        
-        return jsonify(data)
+    finally:
+        # Either returns just the image name (if image handling fails) or just the b64 decoded string as JSON        
+        return jsonify(data) 
+
+# Get image table
+@app.route('/api/images/get/table', methods=['GET'])
+def getImageTable():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = "SELECT Names, Timestamp, Devices_idDevice FROM Images ORDER BY Timestamp DESC"
+    data = db.sqlQuery(query)
+    return jsonify(data)
+
 
 ##################################################
 ################### General ######################
