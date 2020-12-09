@@ -10,7 +10,7 @@ import os, os.path
 import shutil
 from base64 import b64encode
 
-# Set a folder from where program reads json/txt files and posts them to the database
+# Set a folder from where program reads .jpg files and posts them to the database/server
 directory = "D:\\OneDrive - Oulun ammattikorkeakoulu\\S2020_Projekti\\images\\"
 # Set an archive folder where program moves files that are posted
 archive = "D:\\OneDrive - Oulun ammattikorkeakoulu\\S2020_Projekti\\img_archive\\"

@@ -9,7 +9,8 @@ from datetime import date, datetime
 import re, json
 
 import base64
-import os
+from base64 import b64encode
+import os, os.path
 #import io
 #import pillow
 
@@ -54,7 +55,7 @@ def postDevicesImage():
     print (request.is_json)
     content = request.get_json()
     print(content)
-    devID = content["Devices_idDevice"] #TypeError at this: no getitem attribute, content not a json? 
+    devID = content["Devices_idDevice"] 
     img_name = content["Names"]
     img_b64 = content["images"]
     try:
@@ -77,10 +78,26 @@ def getImage(deviceid):
     print (request.is_json)
     content = request.get_json()
     print(content)
-    query = '''Select Names FROM Images WHERE Devices_idDevice = "{}"'''.format(deviceid)
+    query = '''SELECT Names FROM Images WHERE Devices_idDevice = "{}" ORDER BY Timestamp DESC LIMIT 1'''.format(deviceid)
     data = db.sqlQuery(query)
     # TODO: pick an image from img_save_path + img_name and add it to this json
-    return jsonify(data)
+    try:
+        for row in data:
+            Names = row[0]
+
+        file_list = os.listdir(img_save_path)
+        for filename in file_list:
+            if filename.endswith(Names):
+                with open(img_save_path + filename, mode="rb") as open_file:
+                    byte_content = open_file.read()
+                    base64_bytes = b64encode(byte_content)
+                    base64_str = base64_bytes.decode('utf-8')
+                    data = {"images": base64_str}
+
+    except:
+        print("Image handling/sending failed")
+    finally:        
+        return jsonify(data)
 
 ##################################################
 ################### General ######################
@@ -215,7 +232,8 @@ def getRuuvitagLatest(deviceid):
     LEFT JOIN Measurements ON Devices.idDevice = Measurements.Devices_idDevice
     LEFT JOIN Battery ON Devices.idDevice = Battery.Devices_idDevice 
     LEFT JOIN Location ON Devices.idDevice = Location.Devices_idDevice 
-    WHERE Devices.idDevice = {} ORDER BY GREATEST(Measurements.Timestamp, Door_status.Timestamp) DESC'''.format(deviceid)
+    WHERE Devices.idDevice = {} AND Devices.DeviceType = "ruuvitag" 
+    ORDER BY GREATEST(Measurements.Timestamp, Door_status.Timestamp) DESC LIMIT 1'''.format(deviceid)
     data = db.sqlQuery(query)
     return jsonify(data)
 
