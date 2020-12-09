@@ -86,8 +86,6 @@ class SubSettingsViewModel extends ChangeNotifier {
   int _goPiGoLocation;
   List _goPiGoIDList;
   List _goPiGoList;
-  GoPiGoExample _goPiGo;
-  GoPiGoExample get goPiGo => _goPiGo;
 
   ServerSyncService _serverSyncService = locator<ServerSyncService>();
   String _serverString;
@@ -101,29 +99,9 @@ class SubSettingsViewModel extends ChangeNotifier {
       notifyListeners();
     });
 
-    // // Monitor for changes in list of gopigo's:
-    // _localStorageService.goPiGoExampleIDString.listen{
-    //   _goPiGoIDList = _localStorageService.goPiGoExampleIDList;
-    //   // Call for function to rebuild listeners for each GoPiGo
-    // }
-    //
-    // // Get initial list of goPiGo's:
-    // _goPiGoIDList = _localStorageService.goPiGoExampleIDList;
-    //
-    // // Get goPiGo's by ID:
-    // for(var i=0; i< _goPiGoIDList.length; i++){
-    //
-    //   // Assemble list of GoPiGo's:
-    //   _goPiGoList[i] = (_localStorageService.getGoPiGoByID);
-    //
-    //   // Set listeners for changes in each GoPiGo:
-    //   _localStorageService.getStringByID(_goPiGoIDList(i)).listen{
-    //     _goPiGoList[i] = (_localStorageService.getGoPiGoByID(_goPiGoIDList(i)));
-    //   }
-    // }
-
-    _serverString =  "initialised";
     // TODO: How do we unsubscribe when we dispose of viewmodel?
+    // This was worker around by not disposing viewmodel after leaving the page
+
     // Now this is causing errors after viewmodel is disposed, since it is
     //   still listening...
     // _serverSyncService.receiveBroadcastStream.listen((message) {
@@ -139,15 +117,6 @@ class SubSettingsViewModel extends ChangeNotifier {
     //   }
     // });
 
-    //TODO: Demo, remove:
-    _localStorageService.goPiGoExampleString.listen((value) {
-      _goPiGo = _localStorageService.goPiGoExample;
-      notifyListeners();
-    });
-    print('(TRACE) SubSettingsViewModel:initialise.'+ _localStorageService.goPiGoExampleString.getValue());
-    _goPiGo = _localStorageService.goPiGoExample;
-    //_localStorageService.goPiGoExample = _goPiGo;
-    //setServerAddress();
     _serverUpdateInterval = _localStorageService.serverUpdateInterval.getValue().toDouble();
   }
 
