@@ -8,6 +8,13 @@ import databaseConnect as db
 from datetime import date, datetime
 import re, json
 
+import base64
+import os
+#import io
+#import pillow
+
+img_save_path = "/home/ubuntu/images/"
+
 app = flask.Flask(__name__)
 #app.config["DEBUG"] = True
 
@@ -25,6 +32,55 @@ def home():
 
 # New queries for TestDatabase start
 #
+################### Images ######################
+
+# Post an image by idDevice (image base64 included to db)
+@app.route('/api/devices/post/image64', methods=['POST'])
+def postDevicesImage64():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''INSERT INTO Images (Devices_idDevice, Names, images) 
+                VALUES ("{}", "{}", "{}")'''.format(
+                    content['Devices_idDevice'],
+                    content['Names'],
+                    content['images']) 
+    db.sqlInsert(query)
+    return "Post successful"
+
+# Post an image by idDevice (base64 decoded and saved to a directory)
+@app.route('/api/devices/post/image', methods=['POST'])
+def postDevicesImage():
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    devID = content["Devices_idDevice"] #TypeError at this: no getitem attribute, content not a json? 
+    img_name = content["Names"]
+    img_b64 = content["images"]
+    try:
+        img_data = base64.b64decode(img_b64)
+        imgfilename = os.path.join(img_save_path + img_name)
+        with open(imgfilename, 'wb') as f:
+            f.write(img_data)
+
+        query = '''INSERT INTO Images (Devices_idDevice, Names) 
+                    VALUES ("{}", "{}")'''.format(devID, img_name)
+        db.sqlInsert(query)
+        return "Post successful"
+    except:
+        print("Image handling failed")
+    finally:
+        f.close
+
+@app.route('/api/images/get/<deviceid>', methods=['GET'])
+def getImage(deviceid):
+    print (request.is_json)
+    content = request.get_json()
+    print(content)
+    query = '''Select Names FROM Images WHERE Devices_idDevice = "{}"'''.format(deviceid)
+    data = db.sqlQuery(query)
+    # TODO: pick an image from img_save_path + img_name and add it to this json
+    return jsonify(data)
 
 ##################################################
 ################### General ######################
