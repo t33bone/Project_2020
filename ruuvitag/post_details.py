@@ -9,13 +9,16 @@ macs = ['C1:05:25:89:4A:F0',
         'DD:39:47:16:BA:F5',
         'EF:12:4E:E0:FC:95']
 
-ruuviId = ['11','12',"13","14","15"] #These ids are assigned for RuuviTag in the database
+#These ids are assigned for RuuviTag in the database
+ruuviId = ['11','12',"13","14","15"]
 
 macsLenght = len(macs)
 
 postUrl = 'http://195.148.21.106/api/ruuvi/post/details'
 
 print('Starting')
+
+time_to_sleep = 900
 
 while True:
     for i in range(macsLenght):
@@ -35,7 +38,7 @@ while True:
             "Humidity": humidity,
             "AirPressure": pressure}
 
-        print("macAddr is = ", mac)
+        print("macAddr =", mac)
 
         x = requests.post(postUrl, json = j_file)
 
@@ -46,5 +49,5 @@ while True:
             print("The post was unsuccessful.\n")
             time.sleep(1)
     else:
-        print("sleep")
-        time.sleep(60)
+        print("Sleep", time_to_sleep, "sec")
+        time.sleep(time_to_sleep)
